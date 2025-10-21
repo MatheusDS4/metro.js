@@ -21,12 +21,13 @@
 # Label
 
 - [ ] Done
-- [ ] Error boolean (for the `Theme`'s danger color)
-- [ ] Warning boolean (for the `Theme`'s warning color)
+- [ ] `error` boolean (for the `Theme`'s danger color)
+- [ ] `warning` boolean (for the `Theme`'s warning color)
 
 # Button
 
 - [ ] Done
+- [ ] Use an `outline` boolean instead of a variant.
 
 # TextInput
 
@@ -40,8 +41,11 @@
 # ProgressBar
 
 - [ ] Done
-- [ ] Ellipsis
-- [ ] Solid
+- [ ] Variants
+  - [ ] Dots
+  - [ ] Solid (this mixes 2 rectangles, so tweak colors if needed)
+    - [ ] Use `Theme`'s progress bar colors
+- [ ] Use primary color when preferred
 
 # ProgressRing
 
@@ -85,7 +89,14 @@ Way contextual; skinning and behavior relies on surrounding container. It is bas
 # Live tiles
 
 - [ ] Done
+- [ ] Support background-based live tiles by creating masks (which also alter while dragging a tile), similiar to Windows Phone.
+  - [ ] In that case, the container of groups should display a background that serves as the "border". That container will also contain the masks that warp to the parent's background.
+  - [ ] Mask off group's remaining empty area.
 
 # Icons
 
 - [ ] Trash
+
+# Themes
+
+- [ ] Provide more theme variants.

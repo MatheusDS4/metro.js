@@ -17,14 +17,24 @@ export type Theme = {
     foreground: string;
 
     /**
-     * Used in components such as text inputs, tooltips and context menu.
+     * Used in components such as text inputs, tooltips and popover menu.
      */
     inputBackground: string;
 
     /**
-     * Used in components such as text inputs, tooltips and context menu.
+     * Used in components such as text inputs, tooltips and popover menu.
      */
     inputBorder: string;
+
+    /**
+     * Progress bar's background.
+     */
+    progressBarBackground: string;
+
+    /**
+     * Progress bar's foreground (the loaded part).
+     */
+    progressBarForeground: string;
 
     /**
      * Anchor link color.
@@ -93,6 +103,9 @@ const light: Theme = {
     inputBorder: "#b5b5b5",
     inputBackground: "#fff",
 
+    progressBarBackground: "#777",
+    progressBarForeground: "#000",
+
     anchor: "#b700f3",
 
     scrollBarTrack: "#E9E9E9",
@@ -123,6 +136,9 @@ const dark: Theme = {
     inputBorder: "#555",
     inputBackground: "#232323",
 
+    progressBarBackground: "#555",
+    progressBarForeground: "#fff",
+
     anchor: "#695C97",
 
     scrollBarTrack: "rgba(0,0,0,0)",
@@ -145,9 +161,11 @@ const dark: Theme = {
   },
 };
 
+// Purple
 const purple: Theme = structuredClone(dark);
 purple.colors.background = purple.colors.primary = "#180053";
 
+// Green
 const green = structuredClone(dark);
 green.colors.background = "#3F8700";
 green.colors.primary = "#4F970E";

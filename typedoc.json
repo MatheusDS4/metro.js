@@ -1,4 +1,13 @@
 {
-    "$schema": "https://typedoc.org/schema.json",
-    "out": "./docs"
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "./src/components/index.ts",
+    "./src/components/Icon.ts",
+    "./src/components/ProgressRing.ts",
+    "./src/enum.ts",
+    "./src/layout/index.ts",
+    "./src/theme/index.ts",
+    "./src/utils/index.ts",
+  ],
+  "out": "./docs"
 }
