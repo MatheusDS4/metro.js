@@ -54,6 +54,10 @@ Way contextual; skinning and behavior relies on surrounding container (e.g. `Pop
 
 - [ ] Done
 
+# Separator
+
+Way contextual; skinning and behavior relies on surrounding container (e.g. `PopoverMenu`).
+
 # Option
 
 Way contextual; skinning and behavior relies on surrounding container (e.g. `ComboBox`).

@@ -71,6 +71,9 @@ import { EMObserver } from "../utils/EMObserver";
  * Icon parameters.
  */
 export type IconParams = {
+  /**
+   * Icon ID. For a library integrated icon, use an `IntegratedIcons` constant.
+   */
   type?: string;
   size?: number;
   style?: React.CSSProperties;
@@ -104,9 +107,9 @@ export const IconRegistry = {
 };
 
 /**
- * Built-in icon constants.
+ * Metro library's integrated icon constants.
  */
-export const builtinIcons = {
+export const IntegratedIcons = {
   BULLET: "bullet",
   CHECKED: "checked",
   ARROW: "arrow",
@@ -142,34 +145,34 @@ const iconMap = new Map<string, { black: any; white: any }>();
 
 // Initial registers
 IconRegistry.registerMap(new Map([
-  ["bullet", { black: bullet_black, white: bullet_white }],
-  ["checked", { black: checked_black, white: checked_white }],
-  ["arrow", { black: arrow_black, white: arrow_white }],
-  ["fullarrow", { black: fullarrow_black, white: fullarrow_white }],
-  ["search", { black: search_black, white: search_white }],
-  ["clear", { black: clear_black, white: clear_white }],
-  ["games", { black: games_black, white: games_white }],
-  ["ie", { black: ie_black, white: ie_white }],
-  ["video", { black: video_black, white: video_white }],
-  ["store", { black: store_black, white: store_white }],
-  ["settings", { black: settings_black, white: settings_white }],
-  ["mail", { black: mail_black, white: mail_white }],
-  ["user", { black: user_black, white: user_white }],
-  ["security", { black: security_black, white: security_white }],
-  ["calc", { black: calc_black, white: calc_white }],
-  ["camera", { black: camera_black, white: camera_white }],
-  ["bluetooth", { black: bluetooth_black, white: bluetooth_white }],
-  ["news", { black: news_black, white: news_white }],
-  ["bing", { black: bing_black, white: bing_white }],
-  ["opera", { black: opera_black, white: opera_white }],
-  ["chrome", { black: chrome_black, white: chrome_white }],
-  ["firefox", { black: firefox_black, white: firefox_white }],
-  ["msedge", { black: msedge_black, white: msedge_white }],
-  ["lapis", { black: lapis_black, white: lapis_white }],
-  ["idea", { black: idea_black, white: idea_white }],
-  ["help", { black: help_black, white: help_white }],
-  ["helpcircle", { black: help_circle_black, white: help_circle_white }],
-  ["new", { black: new_black, white: new_white }],
+  [IntegratedIcons.BULLET, { black: bullet_black, white: bullet_white }],
+  [IntegratedIcons.CHECKED, { black: checked_black, white: checked_white }],
+  [IntegratedIcons.ARROW, { black: arrow_black, white: arrow_white }],
+  [IntegratedIcons.FULLARROW, { black: fullarrow_black, white: fullarrow_white }],
+  [IntegratedIcons.SEARCH, { black: search_black, white: search_white }],
+  [IntegratedIcons.CLEAR, { black: clear_black, white: clear_white }],
+  [IntegratedIcons.GAMES, { black: games_black, white: games_white }],
+  [IntegratedIcons.IE, { black: ie_black, white: ie_white }],
+  [IntegratedIcons.VIDEO, { black: video_black, white: video_white }],
+  [IntegratedIcons.STORE, { black: store_black, white: store_white }],
+  [IntegratedIcons.SETTINGS, { black: settings_black, white: settings_white }],
+  [IntegratedIcons.MAIL, { black: mail_black, white: mail_white }],
+  [IntegratedIcons.USER, { black: user_black, white: user_white }],
+  [IntegratedIcons.SECURITY, { black: security_black, white: security_white }],
+  [IntegratedIcons.CALC, { black: calc_black, white: calc_white }],
+  [IntegratedIcons.CAMERA, { black: camera_black, white: camera_white }],
+  [IntegratedIcons.BLUETOOTH, { black: bluetooth_black, white: bluetooth_white }],
+  [IntegratedIcons.NEWS, { black: news_black, white: news_white }],
+  [IntegratedIcons.BING, { black: bing_black, white: bing_white }],
+  [IntegratedIcons.OPERA, { black: opera_black, white: opera_white }],
+  [IntegratedIcons.CHROME, { black: chrome_black, white: chrome_white }],
+  [IntegratedIcons.FIREFOX, { black: firefox_black, white: firefox_white }],
+  [IntegratedIcons.MSEDGE, { black: msedge_black, white: msedge_white }],
+  [IntegratedIcons.LAPIS, { black: lapis_black, white: lapis_white }],
+  [IntegratedIcons.IDEA, { black: idea_black, white: idea_white }],
+  [IntegratedIcons.HELP, { black: help_black, white: help_white }],
+  [IntegratedIcons.HELPCIRCLE, { black: help_circle_black, white: help_circle_white }],
+  [IntegratedIcons.NEW, { black: new_black, white: new_white }],
 ]));
 
 const Img = styled.img<{
