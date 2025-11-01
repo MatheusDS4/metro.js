@@ -41,8 +41,6 @@ Baseline group.
 # Button
 
 - [x] Done
-- [x] Variants
-  - [x] `"transparent"`
 - [x] Use an `outline` boolean instead of a variant.
 
 # TextInput
@@ -56,16 +54,10 @@ Baseline group.
 # ProgressBar
 
 - [x] Done
-- [x] Variants
-  - [x] Dots
-  - [x] Solid (this mixes 2 rectangles, so tweak colors if needed)
-    - [x] Use `Theme`'s progress bar colors
-- [x] Use primary color when preferred
 
 # ProgressRing
 
 - [x] Done
-- [x] Use primary color when preferred
 
 # Item
 

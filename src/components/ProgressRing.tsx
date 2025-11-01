@@ -15,8 +15,8 @@ import * as REMConvert from "../utils/REMConvert";
 export function ProgressRing(params: {
   /**
    * Size; note that it overflows by a bit.
-   * The given normal is `size={29}`.
-   * @default 29
+   * The given normal is `size={32}`.
+   * @default 32
    */
   size?: number;
   style?: React.CSSProperties;
@@ -87,7 +87,7 @@ export function ProgressRing(params: {
   let m = 30; // milliseconds
 
   // Size
-  const size = REMConvert.pixels.rem(params.size ?? 29);
+  const size = REMConvert.pixels.rem(params.size ?? 32);
 
   return (
     <Div
