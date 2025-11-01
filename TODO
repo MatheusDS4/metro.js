@@ -30,7 +30,7 @@ Baseline group.
 
 - Discard tooltipPlacement and use a prefix for indicating the tooltip's placement. (`<?top?>`, `<?bottom?>`, `<?left?>`, `<?right?>`)
   - [x] Label
-  - [ ] Button
+  - [x] Button
 
 # Label
 
@@ -40,13 +40,10 @@ Baseline group.
 
 # Button
 
-- [ ] Done
-- [ ] Variants
-  - [ ] `"transparent"`
-- [ ] Use an `outline` boolean instead of a variant.
-- [ ] `link`
-- [ ] `target`
-- [ ] `alt`
+- [x] Done
+- [x] Variants
+  - [x] `"transparent"`
+- [x] Use an `outline` boolean instead of a variant.
 
 # TextInput
 

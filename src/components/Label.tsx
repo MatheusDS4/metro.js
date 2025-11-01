@@ -11,7 +11,7 @@ import { ThemeContext, Theme, PrimaryContext } from "../theme/Theme";
 import { MAXIMUM_Z_INDEX } from "../utils/Constants";
 import * as ColorUtils from "../utils/ColorUtils";
 import * as REMConvert from "../utils/REMConvert";
-import { SimplePlacementType, getTooltipPlacement } from "../utils/PlacementUtils";
+import { SimplePlacementType, getTooltipPlacement, skipTooltipPlacement } from "../utils/PlacementUtils";
 
 export type LabelVariant =
   | "normal"
@@ -154,13 +154,13 @@ export function Label(params: {
         $tooltip_y={tooltip_y}
         $rtl={rtl}
       >
-        {tooltip}
+        {skipTooltipPlacement(tooltip)}
       </TooltipDiv>
     );
 
   // sync tooltip side
   useEffect(() => {
-    tooltip_place_ref.current = params.tooltip ? getTooltipPlacement(params.tooltip) : "bottom";
+    tooltip_place_ref.current = getTooltipPlacement(params.tooltip ?? "");
   }, [params.tooltip ?? ""]);
 
   switch (variant) {

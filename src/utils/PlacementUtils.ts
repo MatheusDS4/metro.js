@@ -44,3 +44,10 @@ export function getTooltipPlacement(text: string): SimplePlacementType {
   }
   return "bottom";
 }
+
+/**
+ * Returns a tooltip text without any placement prefix.
+ */
+export function skipTooltipPlacement(text: string): string {
+  return text.replace(/^<\?(?:top|bottom|left|right)\?>/, "");
+}
