@@ -49,21 +49,21 @@ export function ProgressBar(params: {
   // rem measurement
   const rem = React.useRef<number>(16);
 
-  // gsap timeline
-  const gsap_timeline = React.useRef<null | gsap.core.Timeline>(null);
+  // gsap tweens
+  const gsap_tweens = React.useRef<gsap.core.Tween[]>([]);
 
   // initialization
   React.useEffect(() => {
     // resize observer
     const resize_observer = new ResizeObserver(() => {
-      setup_animation();
+      reset_animation();
     });
     resize_observer.observe(div_ref.current!);
 
     // rem observer
     const rem_observer = new REMObserver(new_rem => {
       rem.current = new_rem;
-      setup_animation();
+      reset_animation();
     });
 
     return () => {
@@ -75,23 +75,78 @@ export function ProgressBar(params: {
   // reflect variant
   React.useEffect(() => {
     variant.current = params.variant ?? "solid";
-    setup_animation();
+    reset_animation();
   }, [params.variant ?? "solid"]);
 
   // setup animation
-  function setup_animation(): void {
+  function reset_animation(): void {
     // destroy previous animation
-    if (gsap_timeline.current != null) {
-      gsap_timeline.current.kill();
-      gsap_timeline.current = null;
+    for (const tween of gsap_tweens.current) {
+      tween.kill();
     }
+    gsap_tweens.current.length = 0;
 
     // setup moving dots animation
     if (variant.current == "dots") {
-      gsap_timeline.current = gsap.timeline();
-      gsap_timeline.current.repeat(Infinity);
       const dots = Array.from(div_ref.current!.getElementsByClassName("progress-bar__wrap")) as HTMLElement[];
-      fixme();
+      const div_width = div_ref.current!.offsetWidth;
+      let center_start_x = 40;
+      let center_end_x = 50;
+      const portrait_width = 500;
+      if (div_width <= portrait_width) {
+        center_start_x = 25;
+        center_end_x = 69;
+      }
+      for (let i = 0; i < 5; i++) {
+        animateDot(dots[i], i);
+      }
+      function animateDot(dot: HTMLElement, index: number): void {
+        let tween = gsap.fromTo(dot,
+          // from
+          {
+            left: "0%",
+            opacity: 0,
+          },
+          // to
+          {
+            left: center_start_x + "%",
+            opacity: 1,
+            duration: 0.5,
+            ease: "power1.out",
+            delay: index * 0.3,
+          }
+        );
+        gsap_tweens.current!.push(tween);
+        tween.then(() => {
+          gsap_tweens.current.splice(gsap_tweens.current!.indexOf(tween), 1);
+          tween = gsap.to(dot, {
+            left: center_end_x + "%",
+            duration: 2,
+            ease: "none",
+          });
+          gsap_tweens.current!.push(tween);
+          tween.then(() => {
+            gsap_tweens.current.splice(gsap_tweens.current!.indexOf(tween), 1);
+            tween = gsap.to(dot, {
+              left: "100%",
+              opacity: 0,
+              duration: 0.5,
+              ease: "power1.in",
+            });
+            gsap_tweens.current!.push(tween);
+            tween.then(() => {
+              gsap_tweens.current.splice(gsap_tweens.current!.indexOf(tween), 1);
+
+              // restart
+              window.setTimeout(() => {
+                if (gsap_tweens.current.length == 0) {
+                  reset_animation();
+                }
+              }, 1_000);
+            });
+          });
+        });
+      }
     }
   }
 

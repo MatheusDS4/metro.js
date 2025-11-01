@@ -55,7 +55,7 @@ Baseline group.
 
 # ProgressBar
 
-- [ ] Done
+- [x] Done
 - [x] Variants
   - [x] Dots
   - [x] Solid (this mixes 2 rectangles, so tweak colors if needed)
