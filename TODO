@@ -68,6 +68,7 @@ Baseline group.
   - [ ] PopoverMenuController (provide optional `controller=` ref)
     - [ ] .open() method
     - [ ] .close() method (closes the menu and its submenus)
+  - [ ] Hovering a submenu representation's item should open the submenu (without focusing any of its items) and close the previous ones.
   - [ ] Clicking outside the open popover menu should close it and other open submenus.
   - [ ] Clicking a submenu Item should open its PopoverMenu (the submenu)
   - [ ] Escape key (closes the innermost popover menu)
@@ -78,6 +79,10 @@ Baseline group.
       - [ ] If opening submenu, focus its first item.
       - [ ] RTL
     - [ ] Up/down
+      - Up
+        - [ ] If none of the items in the innermost menu are focused, focus the last one.
+      - Down
+        - [ ] If none of the items in the innermost menu are focused, focus the first one.
   - [ ] Typing item name (match label)
     - [ ] RTL
 - [ ] Prevent rolling wheel on the entire document while a popover menu is open. (`passive: false` handler)
