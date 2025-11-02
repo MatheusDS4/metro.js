@@ -63,19 +63,19 @@ Baseline group.
 
 - [ ] Done
 
-Each item must contain three elements: the icon (use `<span>` for empty), the label, and the ending (usually a shortcut, submenu indicator or `<span>` for empty).
+Each item must contain three elements: the icon, the label, and the ending (usually a shortcut or submenu indicator). All of them, except the label, are wrapped in a `span`.
 
 ```
 <PopoverMenu>
   <Item>
-    <Icon native={NativeIcons.INTERNET_EXPLORER}/>
+    <span><Icon native={NativeIcons.INTERNET_EXPLORER}/></span>
     <Label>Internet Explorer</Label>
-    <Shortcut>Ctrl+E</Shortcut>
+    <span><Shortcut>Ctrl+E</Shortcut></span>
   </Item>
-  <Item subPopoverMenu>
+  <Item submenu>
     <span></span>
     <Label>Submenu</Label>
-    <SubPopoverMenuIndicator/>
+    <span><Indicator/></span>
   </Item>
   <SubPopoverMenu>
     <Item>
