@@ -62,6 +62,24 @@ Baseline group.
 # PopoverMenu
 
 - [ ] Done
+  - [ ] Skin `&&` and submenus (`.PopoverMenu`)
+  - [ ] Skin Items
+  - [ ] Skin Indicator (submenu arrow icon; observe color and RTL)
+  - [ ] PopoverMenuController (provide optional `controller=` ref)
+    - [ ] .open() method
+    - [ ] .close() method (closes the menu and its submenus)
+  - [ ] Clicking outside the open popover menu should close it and other open submenus.
+  - [ ] Clicking a submenu Item should open its PopoverMenu (the submenu)
+  - [ ] Escape key (closes the innermost popover menu)
+  - [ ] Open submenu representation items should be highlighted as focused.
+  - [ ] Arrow navigation
+    - [ ] Left/right (close/open submenu)
+      - [ ] If closing submenu, focus the submenu representation's item.
+      - [ ] If opening submenu, focus its first item.
+      - [ ] RTL
+    - [ ] Up/down
+  - [ ] Typing item name (match label)
+    - [ ] RTL
 - [ ] Prevent rolling wheel on the entire document while a popover menu is open. (`passive: false` handler)
 
 Each item must contain three tags: the icon, the label, and the ending (usually a shortcut or submenu indicator). All of them, except the label, are wrapped in a `span`. For an item representing a submenu, there is an extra tag being the sub-popover-menu.
