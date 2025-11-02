@@ -62,8 +62,9 @@ Baseline group.
 # PopoverMenu
 
 - [ ] Done
+- [ ] Prevent rolling wheel on the entire document while a popover menu is open. (`passive: false` handler)
 
-Each item must contain three elements: the icon, the label, and the ending (usually a shortcut or submenu indicator). All of them, except the label, are wrapped in a `span`.
+Each item must contain three tags: the icon, the label, and the ending (usually a shortcut or submenu indicator). All of them, except the label, are wrapped in a `span`. For an item representing a submenu, there is an extra tag being the sub-popover-menu.
 
 ```
 <PopoverMenu>
@@ -76,14 +77,14 @@ Each item must contain three elements: the icon, the label, and the ending (usua
     <span></span>
     <Label>Submenu</Label>
     <span><Indicator/></span>
+    <PopoverMenu>
+      <Item>
+        <span></span>
+        <Label>Item 1</Label>
+        <span></span>
+      </Item>
+    </PopoverMenu>
   </Item>
-  <SubPopoverMenu>
-    <Item>
-      <span></span>
-      <Label>Item 1</Label>
-      <span></span>
-    </Item>
-  </SubPopoverMenu>
 </PopoverMenu>
 ```
 
