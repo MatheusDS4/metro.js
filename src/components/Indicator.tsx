@@ -34,18 +34,9 @@ export function Indicator() {
   // initialization
   React.useEffect(() => {
     const div_el = div.current!;
-
-    // detect when the Indicator belongs to a
-    // PopoverMenu
-    function ofPopoverMenu(): void {
+    if (div_el.parentElement?.parentElement?.parentElement?.classList.contains("PopoverMenu")) {
       set_indicator_type("popoverMenu");
     }
-    div_el.addEventListener("_ofPopoverMenu", ofPopoverMenu);
-
-    // cleanup
-    return () => {
-      div_el.removeEventListener("_ofPopoverMenu", ofPopoverMenu);
-    };
   }, []);
 
   return (

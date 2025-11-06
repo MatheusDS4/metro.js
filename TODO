@@ -64,7 +64,8 @@ Baseline group.
 - [ ] Done
   - [ ] Skin `&&`
   - [ ] Skin Items
-  - [ ] Skin Indicator (submenu arrow icon; observe color and RTL)
+  - [90%] Skin Indicator
+  - [ ] Skin Separator
   - [ ] PopoverMenuController (provide optional `controller=` ref)
     - [ ] .open() method
     - [ ] .close() method (closes the menu and its submenus)
@@ -96,6 +97,7 @@ Each item must contain three tags: the icon, the label, and the ending (usually 
     <Label>Internet Explorer</Label>
     <span>Ctrl+E</span>
   </Item>
+  <Separator/>
   <Item submenu>
     <span></span>
     <Label>Submenu</Label>

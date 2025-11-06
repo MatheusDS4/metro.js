@@ -28,27 +28,6 @@ export function PopoverMenu(params: {
   // ?theme
   const theme = React.useContext(ThemeContext);
 
-  // initialization
-  React.useEffect(() => {
-    // detect added Item children so they are skinned
-    // correctly.
-    const children_observer = new MutationObserver(records => {
-      for (const record of records) {
-        for (const node of record.addedNodes) {
-          if (node instanceof HTMLElement && (node as HTMLElement).classList.contains("item")) {
-            (node as HTMLElement).dispatchEvent(new Event("_ofPopoverMenu"));
-          }
-        }
-      }
-    });
-    children_observer.observe(div.current!);
-
-    // cleanup
-    return () => {
-      children_observer.disconnect();
-    };
-  }, []);
-
   return (
     <Div
       className={

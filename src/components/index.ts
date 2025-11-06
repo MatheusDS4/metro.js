@@ -12,3 +12,4 @@ export * from "./FormGroup";
 export * from "./PopoverMenu";
 export * from "./Item";
 export * from "./Indicator";
+export * from "./Separator";

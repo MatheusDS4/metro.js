@@ -16,33 +16,9 @@ export function Item(params: {
   className?: string,
   id?: string,
   style?: React.CSSProperties,
-}) {
+}): React.ReactNode {
   // div
   const div = React.useRef<null | HTMLDivElement>(null);
-
-  // initialization
-  React.useEffect(() => {
-    const div_el = div.current!;
-
-    // detect when the Item belongs to a
-    // PopoverMenu
-    function ofPopoverMenu(): void {
-      if (div_el.children.length < 3) {
-        return;
-      }
-      const end = div_el.children[2];
-      const indicator = end.getElementsByClassName("Indicator");
-      if (indicator.length != 0) {
-        indicator[0].dispatchEvent(new Event("_ofPopoverMenu"));
-      }
-    }
-    div_el.addEventListener("_ofPopoverMenu", ofPopoverMenu);
-
-    // cleanup
-    return () => {
-      div_el.removeEventListener("_ofPopoverMenu", ofPopoverMenu);
-    };
-  }, []);
 
   return (
     <div
