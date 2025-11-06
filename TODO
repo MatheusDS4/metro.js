@@ -71,7 +71,8 @@ Baseline group.
 - [ ] Done
   - [ ] Skin `&&`
   - [ ] Skin Items
-  - [90%] Skin Indicator
+  - [x] Skin Indicator
+    - [ ] Size it correctly from PopoverMenu's style sheet.
   - [ ] Skin Separator
   - [ ] PopoverMenuController (provide optional `controller=` ref)
     - [ ] .open() method
