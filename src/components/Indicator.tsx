@@ -53,6 +53,11 @@ export function Indicator(params: {
    * @default "popoverMenu"
    */
   state?: IndicatorState,
+
+  /**
+   * Indicator size.
+   */
+  size?: number,
 }) {
   // div
   const div = React.useRef<null | HTMLDivElement>(null);
@@ -83,11 +88,11 @@ export function Indicator(params: {
 
       {
         indicator_type == "popoverMenu" ?
-          <Icon type={rtl ? NativeIcons.ARROW_LEFT : NativeIcons.ARROW_RIGHT}/> :
+          <Icon type={rtl ? NativeIcons.ARROW_LEFT : NativeIcons.ARROW_RIGHT} size={params.size ?? 9}/> :
         indicator_type == "checked" ?
-          <Icon type={NativeIcons.CHECKED}/> :
+          <Icon type={NativeIcons.CHECKED} size={params.size ?? 9}/> :
         indicator_type == "option" ?
-          <Icon type={NativeIcons.BULLET}/> :
+          <Icon type={NativeIcons.BULLET} size={params.size ?? 9}/> :
           undefined
       }
     </div>
