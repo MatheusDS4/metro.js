@@ -37,11 +37,13 @@ Baseline group.
 - [x] Done
 - [x] `error` boolean (for the `Theme`'s danger color)
 - [x] `warning` boolean (for the `Theme`'s warning color)
+- [ ] tooltip must close and not open while a PopoverMenu is open.
 
 # Button
 
 - [x] Done
 - [x] Use an `outline` boolean instead of a variant.
+- [ ] tooltip must close and not open while a PopoverMenu is open.
 - [ ] submit parameter (i.e. makes this button submit the enclosing Form)
 
 # TextInput
