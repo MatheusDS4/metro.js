@@ -6,12 +6,6 @@ import * as React from "react";
  * inside a `PopoverMenu`.
  */
 export function Item(params: {
-  /**
-   * If the `Item` belongs to a `PopoverMenu`, indicates
-   * whether it represents a sub-popover-menu.
-   */
-  submenu?: boolean,
-
   children?: React.ReactNode,
   className?: string,
   id?: string,
@@ -27,8 +21,7 @@ export function Item(params: {
       }
       id={params.id}
       style={params.style}
-      ref={div}
-      data-submenu={params.submenu ? "true" : undefined}>
+      ref={div}>
 
       {params.children}
     </div>

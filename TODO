@@ -106,7 +106,7 @@ Each item must contain three tags: the icon, the label, and the ending (usually 
     <span>Ctrl+E</span>
   </Item>
   <Separator/>
-  <Item submenu>
+  <Item>
     <span></span>
     <Label>Submenu</Label>
     <span><Indicator/></span>

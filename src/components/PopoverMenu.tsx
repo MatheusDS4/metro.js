@@ -2,6 +2,7 @@
 import * as React from "react";
 import { styled } from "styled-components";
 import gsap from "gsap";
+import * as FloatingUI from "@floating-ui/dom";
 
 // local
 import { RTLContext } from "../layout/RTL";
@@ -37,7 +38,11 @@ export function PopoverMenu(params: {
       style={params.style}
       ref={div}>
 
-      {params.children}
+      <div className="PopoverMenu-up-arrow"></div>
+      <div className="PopoverMenu-content">
+        {params.children}
+      </div>
+      <div className="PopoverMenu-down-arrow"></div>
     </Div>
   );
 }

@@ -34,7 +34,7 @@ export function Indicator() {
   // initialization
   React.useEffect(() => {
     const div_el = div.current!;
-    if (div_el.parentElement?.parentElement?.parentElement?.classList.contains("PopoverMenu")) {
+    if (div_el.parentElement?.parentElement?.parentElement?.parentElement?.classList.contains("PopoverMenu")) {
       set_indicator_type("popoverMenu");
     }
   }, []);
