@@ -1,12 +1,14 @@
 // third-party
 import * as React from "react";
 import { styled } from "styled-components";
+import { Color } from "@hydroperx/color";
 import gsap from "gsap";
 import * as FloatingUI from "@floating-ui/dom";
 
 // local
 import { RTLContext } from "../layout/RTL";
 import { Theme, ThemeContext } from "../theme/Theme";
+import * as ColorUtils from "../utils/ColorUtils";
 import * as MathUtils from "../utils/MathUtils";
 import * as REMConvert from "../utils/REMConvert";
 import { COMMON_DELAY, MAXIMUM_Z_INDEX } from "../utils/Constants";
@@ -32,7 +34,11 @@ export function PopoverMenu(params: {
   return (
     <Div
       className={
-        ["PopoverMenu", (params.className ?? "").split(" ").filter(p => p != "")].join(" ")
+        [
+          "PopoverMenu",
+          ...(rtl ? ["rtl"] : []),
+          ...(params.className ?? "").split(" ").filter(p => p != ""),
+        ].join(" ")
       }
       id={params.id}
       style={params.style}
@@ -88,15 +94,65 @@ const Div = styled.div<{
     flex-grow: 3;
   }
 
-  /* Item*/
+  /* Item */
   && > .PopoverMenu-content > .Item {
+    display: inline-flex;
+    flex-direction: row;
+    gap: 0.9rem;
+    padding: 0.5rem 0.7rem;
+    background: none;
+    border: none;
+    outline: none;
+    color: ${$ => $.$foreground};
+  }
+  &&.rtl > .PopoverMenu-content > .Item {
+    flex-direction: row-reverse;
+  }
+  && > .PopoverMenu-content > .Item:focus:not(:disabled),
+  && > .PopoverMenu-content > .Item:active:not(:disabled) {
+    background: ${$ => ColorUtils.contrast($.$backgroundColor, 0.4)};
+    color: ${$ => $.$foreground};
+  }
+  && > .PopoverMenu-content > .Item:disabled {
+    opacity: 0.5;
+  }
+
+  /* icon reserved space for an Item */
+  && > .PopoverMenu-content > .Item > span:nth-child(1) {
+    width: ${REMConvert.pixels.remPlusUnit(9)};
+    height: ${REMConvert.pixels.remPlusUnit(9)};
+  }
+
+  /* label reserved space for an Item */
+  &&.rtl > .PopoverMenu-content > .Item > .Label:nth-child(2) {
+    text-align: right;
+  }
+
+  /* ending reserved space for an Item */
+  && > .PopoverMenu-content > .Item > span:nth-child(3) {
+    flex-grow: 4;
+    font-size: 0.8rem;
+    opacity: 0.6;
+    min-width: ${REMConvert.pixels.remPlusUnit(9)};
+    min-height: ${REMConvert.pixels.remPlusUnit(9)};
+  }
+  &&:not(.rtl) > .PopoverMenu-content > .Item > span:nth-child(3) {
+    text-align: right;
+    margin-left: 2rem;
+  }
+  &&.rtl > .PopoverMenu-content > .Item > span:nth-child(3) {
+    text-align: left;
+    margin-right: 2rem;
   }
 
   /* Indicator */
   && > .PopoverMenu-content > .Item > span:nth-child(3) > .Indicator {
+    width: ${REMConvert.pixels.remPlusUnit(9)};
+    height: ${REMConvert.pixels.remPlusUnit(9)};
   }
 
   /* Separator */
   && > .PopoverMenu-content > .Separator {
+    padding: 0.45rem;
   }
 `;

@@ -11,19 +11,15 @@ export function Item(params: {
   id?: string,
   style?: React.CSSProperties,
 }): React.ReactNode {
-  // div
-  const div = React.useRef<null | HTMLDivElement>(null);
-
   return (
-    <div
+    <button
       className={
         ["Item", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")
       }
       id={params.id}
-      style={params.style}
-      ref={div}>
+      style={params.style}>
 
       {params.children}
-    </div>
+    </button>
   );
 }

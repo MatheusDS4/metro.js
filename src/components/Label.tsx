@@ -172,7 +172,7 @@ export function Label(params: {
               id={params.id}
               onPointerEnter={pointerEnter as any}
               onPointerLeave={pointerLeave as any}
-              className={params.className}
+              className={["Label", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
               style={newStyle}
               htmlFor={params.for}
               $primary={primary}
@@ -195,7 +195,7 @@ export function Label(params: {
             id={params.id}
             onPointerEnter={pointerEnter as any}
             onPointerLeave={pointerLeave as any}
-            className={params.className}
+            className={["Label", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
             style={newStyle}
             $primary={primary}
             $error={params.error}
@@ -219,7 +219,7 @@ export function Label(params: {
               id={params.id}
               onPointerEnter={pointerEnter as any}
               onPointerLeave={pointerLeave as any}
-              className={params.className}
+              className={["Label", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
               style={newStyle}
               htmlFor={params.for}
               $primary={primary}
@@ -242,7 +242,7 @@ export function Label(params: {
             id={params.id}
             onPointerEnter={pointerEnter as any}
             onPointerLeave={pointerLeave as any}
-            className={params.className}
+            className={["Label", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
             style={newStyle}
             $primary={primary}
             $error={params.error}
@@ -266,7 +266,7 @@ export function Label(params: {
               id={params.id}
               onPointerEnter={pointerEnter as any}
               onPointerLeave={pointerLeave as any}
-              className={params.className}
+              className={["Label", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
               style={newStyle}
               htmlFor={params.for}
               $primary={primary}
@@ -289,7 +289,7 @@ export function Label(params: {
             id={params.id}
             onPointerEnter={pointerEnter as any}
             onPointerLeave={pointerLeave as any}
-            className={params.className}
+            className={["Label", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
             style={newStyle}
             $primary={primary}
             $error={params.error}
@@ -313,7 +313,7 @@ export function Label(params: {
               id={params.id}
               onPointerEnter={pointerEnter as any}
               onPointerLeave={pointerLeave as any}
-              className={params.className}
+              className={["Label", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
               style={newStyle}
               htmlFor={params.for}
               $primary={primary}
@@ -336,7 +336,7 @@ export function Label(params: {
             id={params.id}
             onPointerEnter={pointerEnter as any}
             onPointerLeave={pointerLeave as any}
-            className={params.className}
+            className={["Label", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
             style={newStyle}
             $primary={primary}
             $error={params.error}
@@ -360,7 +360,7 @@ export function Label(params: {
               id={params.id}
               onPointerEnter={pointerEnter as any}
               onPointerLeave={pointerLeave as any}
-              className={params.className}
+              className={["Label", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
               style={newStyle}
               htmlFor={params.for}
               $primary={primary}
@@ -383,7 +383,7 @@ export function Label(params: {
             id={params.id}
             onPointerEnter={pointerEnter as any}
             onPointerLeave={pointerLeave as any}
-            className={params.className}
+            className={["Label", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
             style={newStyle}
             $primary={primary}
             $error={params.error}
@@ -407,7 +407,7 @@ export function Label(params: {
               id={params.id}
               onPointerEnter={pointerEnter as any}
               onPointerLeave={pointerLeave as any}
-              className={params.className}
+              className={["Label", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
               style={newStyle}
               htmlFor={params.for}
               $primary={primary}
@@ -430,7 +430,7 @@ export function Label(params: {
             id={params.id}
             onPointerEnter={pointerEnter as any}
             onPointerLeave={pointerLeave as any}
-            className={params.className}
+            className={["Label", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
             style={newStyle}
             $primary={primary}
             $error={params.error}

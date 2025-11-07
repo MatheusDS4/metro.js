@@ -6,8 +6,12 @@ import { Icon, NativeIcons } from "./Icon";
 import { RTLContext } from "../layout/RTL";
 
 /**
- * A context-dependent indicator icon. Currently used
- * inside a `PopoverMenu`'s submenu-representing `Item`,
+ * A context-dependent indicator icon.
+ *
+ * # Popover menus
+ * 
+ * Currently used
+ * inside a `PopoverMenu`'s `Item`,
  * inside the third child tag, as in:
  * 
  * ```
@@ -19,14 +23,42 @@ import { RTLContext } from "../layout/RTL";
  *         ...
  *     </PopoverMenu>
  * </Item>
+ * <Item>
+ *     <span></span>
+ *     <Label>Enable me (1)</Label>
+ *     <span><Indicator state="checked"/></span>
+ * </Item>
+ * <Item>
+ *     <span></span>
+ *     <Label>Enable me (2)</Label>
+ *     <span><Indicator state="none"/></span>
+ * </Item>
+ * <Item>
+ *     <span></span>
+ *     <Label>Option A</Label>
+ *     <span><Indicator state="option"/></span>
+ * </Item>
+ * <Item>
+ *     <span></span>
+ *     <Label>Option B</Label>
+ *     <span><Indicator state="none"/></span>
+ * </Item>
  * ```
  */
-export function Indicator() {
+export function Indicator(params: {
+  /**
+   * Whether the indicator is checked, invisible (`"none"`)
+   * or a popover menu indicator.
+   *
+   * @default "popoverMenu"
+   */
+  state?: IndicatorState,
+}) {
   // div
   const div = React.useRef<null | HTMLDivElement>(null);
 
   // indicator type
-  const [indicator_type, set_indicator_type] = React.useState<string>("popoverMenu");
+  const [indicator_type, set_indicator_type] = React.useState<IndicatorState>(params.state ?? "popoverMenu");
 
   // ?rtl
   const rtl = React.useContext(RTLContext);
@@ -39,6 +71,11 @@ export function Indicator() {
     }
   }, []);
 
+  // detect changes to the `state` parameter.
+  React.useEffect(() => {
+    set_indicator_type(params.state ?? indicator_type);
+  }, [params.state]);
+
   return (
     <div
       className="Indicator"
@@ -47,8 +84,18 @@ export function Indicator() {
       {
         indicator_type == "popoverMenu" ?
           <Icon type={rtl ? NativeIcons.ARROW_LEFT : NativeIcons.ARROW_RIGHT}/> :
+        indicator_type == "checked" ?
+          <Icon type={NativeIcons.CHECKED}/> :
+        indicator_type == "option" ?
+          <Icon type={NativeIcons.BULLET}/> :
           undefined
       }
     </div>
   );
 }
+
+export type IndicatorState =
+  | "none"
+  | "checked"
+  | "option"
+  | "popoverMenu";

@@ -69,11 +69,10 @@ Baseline group.
 # PopoverMenu
 
 - [ ] Done
-  - [ ] Skin `&&`
-  - [ ] Skin Items
+  - [x] Skin `&&`
+  - [x] Skin Items
   - [x] Skin Indicator
-    - [ ] Size it correctly from PopoverMenu's style sheet.
-  - [ ] Skin Separator
+  - [x] Skin Separator
   - [ ] PopoverMenuController (provide optional `controller=` ref)
     - [ ] .open() method
     - [ ] .close() method (closes the menu and its submenus)
