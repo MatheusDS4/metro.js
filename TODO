@@ -84,7 +84,8 @@ Baseline group.
   - [ ] Clicking outside the open popover menu should close it and other open submenus.
   - [ ] Clicking a submenu Item should open its PopoverMenu (the submenu)
   - [ ] Escape key (closes the innermost popover menu)
-  - [ ] Open submenu representation items should be highlighted as focused.
+    - [ ] Focus submenu-representing item back if the case
+  - [ ] Open submenu representation items should be highlighted as focused. (`data-open='true'`)
     - [ ] Skin them
   - [ ] Arrow navigation
     - [ ] Left/right (close/open submenu)

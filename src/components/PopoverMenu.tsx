@@ -35,6 +35,7 @@ export function PopoverMenu(params: {
 
   // ?rtl
   const rtl = React.useContext(RTLContext);
+  const rtl_reference = React.useRef(rtl);
 
   // ?theme
   const theme = React.useContext(ThemeContext);
@@ -50,15 +51,18 @@ export function PopoverMenu(params: {
     div_el.addEventListener("_PopoverMenu_open", external_open_request as any);
 
     // handle external request to close
-    function external_close_request(e: Event): void {
-      close();
+    function external_close_request(e: CustomEvent<{ immediate: boolean }>): void {
+      close(e.detail.immediate);
     }
-    div_el.addEventListener("_PopoverMenu_close", external_close_request);
+    div_el.addEventListener("_PopoverMenu_close", external_close_request as any);
 
     // cleanup
     return () => {
       div_el.removeEventListener("_PopoverMenu_open", external_open_request as any);
       div_el.removeEventListener("_PopoverMenu_close", external_close_request);
+
+      // dispose of global handlers if any
+      fixme();
     };
   }, []);
 
@@ -86,18 +90,75 @@ export function PopoverMenu(params: {
     };
   }, [params.controller]);
 
+  // sync ?rtl
+  React.useEffect(() => {
+    rtl_reference.current = rtl;
+  }, [rtl]);
+
   // open logic
   function open(params: PopoverMenuOpenParams): void {
-    // close all menus
-    for (const menu of document.body.querySelectorAll(".PopoverMenu[data-open='true']")) {
-      menu.dispatchEvent(new Event("_PopoverMenu_close"));
+    const div_el = div.current!;
+    if (div_el.getAttribute("data-open") == "true") {
+      return;
     }
+
+    // enumerate parent PopoverMenus (ascending order)
+    const parents: HTMLDivElement[] = [];
+    let possibly_unrelated_parent = div_el.parentElement?.parentElement?.parentElement;
+    for (; possibly_unrelated_parent;) {
+      if (possibly_unrelated_parent.classList.contains("PopoverMenu")) {
+        parents.splice(0, 0, possibly_unrelated_parent as HTMLDivElement);
+      } else {
+        break;
+      }
+      possibly_unrelated_parent = possibly_unrelated_parent.parentElement?.parentElement?.parentElement;
+    }
+
+    // close other menus
+    for (const menu of document.body.querySelectorAll(".PopoverMenu[data-open='true']")) {
+      // do not close parent menus or this menu itself
+      if (parents.includes(menu as HTMLDivElement) || menu === div_el) {
+        continue;
+      }
+      menu.dispatchEvent(new CustomEvent("_PopoverMenu_close", {
+        detail: { immediate: true },
+      }));
+    }
+
+    // remember as open
+    div_el.setAttribute("data-open", "true");
+
+    // make it visible
+    div_el.style.visibility = "visible";
 
     fixme();
   }
 
   // close logic
-  function close(): void {
+  function close(immediate: boolean = false): void {
+    const div_el = div.current!;
+    if (div_el.getAttribute("data-open") !== "true") {
+      return;
+    }
+    // cancel highlighting open submenu items
+    for (const item of div_el.querySelectorAll(".Item[data-open='true']")) {
+      item.removeAttribute("data-open");
+    }
+
+    // close submenus
+    for (const menu of div_el.querySelectorAll(".PopoverMenu[data-open='true']")) {
+      menu.dispatchEvent(new CustomEvent("_PopoverMenu_close", {
+        detail: { immediate },
+      }));
+    }
+
+    // remember as closed
+    div_el.removeAttribute("data-open");
+
+    // visibility immediately cleared or play a position-alpha tween before?
+    fixme();
+
+    // dispose of global handlers
     fixme();
   }
 
