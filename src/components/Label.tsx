@@ -607,7 +607,7 @@ const H3Label = styled.label<LabelCSSProps>`
       ? `color: ${$.$theme.colors.warning};`
       : ""}
     font-size: 1.9rem;
-    font-weight: bold;
+    font-weight: lighter;
     margin: 0.67rem 0;
     ${$ => $.$sizing}
     ${$ => $.$wrap ? "overflow-wrap: anywhere;" : ""}
@@ -628,7 +628,7 @@ const H3 = styled.h3<LabelCSSProps>`
       ? `color: ${$.$theme.colors.warning};`
       : ""}
     font-size: 1.9rem;
-    font-weight: bold;
+    font-weight: lighter;
     margin: 0.67rem 0;
     ${$ => $.$sizing}
     ${$ => $.$wrap ? "overflow-wrap: anywhere;" : ""}

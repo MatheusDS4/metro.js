@@ -12,7 +12,7 @@ import { ComboBoxStatic } from "./combobox/ComboBoxStatic";
 import { ComboBoxEffect } from "./combobox/ComboBoxEffect";
 import { RTLContext } from "../layout/RTL";
 import { Icon, NativeIcons } from "./Icon";
-import { Theme, ThemeContext } from "../theme/Theme";
+import { Theme, ThemeContext, PrimaryContext } from "../theme/Theme";
 import * as ColorUtils from "../utils/ColorUtils";
 import { focusPrevSibling, focusNextSibling } from "../utils/FocusUtils";
 import * as StringUtils from "../utils/StringUtils";
@@ -72,12 +72,35 @@ export function ComboBox(params: {
   // handlers
   const change_handler = React.useRef<undefined | ((value: string) => void)>(undefined);
 
+  // scroll-indicator arrows visible?
+  const [arrows_visible, set_arrows_visible] = React.useState(false);
+
+  // value vars
+  const [value_html, set_value_html] = React.useState("");
+  const value_sync = React.useRef("");
+
   // ?rtl
   const rtl = React.useContext(RTLContext);
   const rtl_sync = React.useRef(rtl);
 
+  // ?theme
+  const theme = React.useContext(ThemeContext);
+
+  // ?primary
+  const primary = React.useContext(PrimaryContext);
+
+  // selected foreground color
+  const selected_foreground_color = primary ?
+    ColorUtils.enhance({ color: theme.colors.primary, background: theme.colors.inputBackground }) :
+    theme.colors.foreground;
+
   // initialization
   React.useEffect(() => {
+    const combobox_el = combobox.current!;
+
+    // reflection cache
+    let reflect_timeout = -1;
+
     // handle external "_ComboBox_reflect" event
     function external_reflect(): void {
       // search for:
@@ -85,13 +108,35 @@ export function ComboBox(params: {
       //   function reflect() {
       //
       // in old ComboBox
-      fixme();
+      if (reflect_timeout != -1) {
+        window.clearTimeout(reflect_timeout);
+      }
+      reflect_timeout = window.setTimeout(() => {
+        reflect_timeout = -1;
+
+        // item list div
+        const item_list_div = getItemListDiv();
+        const children = Array.from(item_list_div.children) as HTMLElement[];
+
+        // set the item[data-selected] attribute
+        for (const option of children) {
+          option.removeAttribute("data-selected");
+        }
+        const selected_option =
+          (children.find(e => e.getAttribute("data-value") == value_sync.current) ?? null) as null | HTMLButtonElement;
+        if (selected_option) {
+          selected_option.setAttribute("data-selected", "true");
+          set_value_html(extract_compact_html(selected_option));
+        } else {
+          set_value_html("");
+        }
+      }, 0);
     }
-    combobox.current!.addEventListener("_ComboBox_reflect", external_reflect);
+    combobox_el.addEventListener("_ComboBox_reflect", external_reflect);
 
     // cleanup
     return () => {
-      combobox.current!.removeEventListener("_ComboBox_reflect", external_reflect);
+      combobox_el.removeEventListener("_ComboBox_reflect", external_reflect);
       // dispose of global handlers
       dispose_global_handlers();
     };
@@ -106,6 +151,15 @@ export function ComboBox(params: {
   React.useEffect(() => {
     rtl_sync.current = rtl;
   }, [rtl]);
+
+  // returns the HTML of an element stripping Icons off.
+  function extract_compact_html(element: HTMLElement): string {
+    const n = element.cloneNode(true) as HTMLElement;
+    for (const icon of n.getElementsByClassName("Icon")) {
+      icon.remove();
+    }
+    return n.innerHTML.trim();
+  }
 
   // register global event handlers used by the ComboBox.
   function register_global_handlers(): void {
@@ -144,6 +198,11 @@ export function ComboBox(params: {
     }
   }
 
+  // returns the div directly containing the Options.
+  function getItemListDiv(): HTMLDivElement {
+    return dropdown.current!.children[1] as HTMLDivElement;
+  }
+
   return (
     <>
       <ComboBoxButton
@@ -164,7 +223,10 @@ export function ComboBox(params: {
             params.ref.current = val;
           }
         }}
-        disabled={params.disabled}>
+        disabled={params.disabled}
+        $background={theme.colors.inputBackground}
+        $border={theme.colors.inputBorder}
+        $foreground={selected_foreground_color}>
 
         <div
           className="ComboBox-button-inner"
@@ -172,15 +234,22 @@ export function ComboBox(params: {
         </div>
 
         <div className="ComboBox-button-arrow">
-          <Icon type={NativeIcons.ARROW_DOWN} size={params.big ? 18 : 10.5}/>
+          <Icon type={NativeIcons.ARROW_DOWN} size={params.big ? 18 : params.medium ? 14 : 10.5}/>
         </div>
       </ComboBoxButton>
       <ComboBoxDropdown
         ref={dropdown}
         className={[
+          ...(params.big ? ["ComboBox-big"] : []),
+          ...(params.medium ? ["ComboBox-medium"] : []),
+          ...[arrows_visible ? ["arrows-visible"] : []],
           ...[rtl ? ["rtl"] : []],
-        ].join(" ")}>
-        
+        ].join(" ")}
+        $option_background={theme.colors.inputBackground}
+        $option_foreground={theme.colors.foreground}
+        $option_border={theme.colors.inputBorder}
+        $selected_foreground_color={selected_foreground_color}>
+
         <div className="ComboBox-up-arrow">
           <Icon type={NativeIcons.ARROW_UP} size={7.5}/>
         </div>
@@ -195,14 +264,174 @@ export function ComboBox(params: {
 
 // style sheet
 const ComboBoxButton = styled.button<{
-  //
+  $background: string,
+  $border: string,
+  $foreground: string,
 }> `
+  && {
+    background: ${$ => $.$background};
+    border: 0.15rem solid ${$ => $.$border};
+    color: ${$ => $.$foreground};
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: ${REMConvert.pixels.rem(6) + 0.15}rem 0.7rem;
+    min-width: 7rem;
+    outline: none;
+  }
+  &&.rtl {
+    flex-direction: row-reverse;
+  }
+  &&:hover:not(:disabled),
+  &&:focus:not(:disabled) {
+    background: ${$ => ColorUtils.contrast($.$background, 0.4)};
+  }
+  &&:active:not(:disabled) {
+    background: ${$ => ColorUtils.contrast($.$background, 0.6)};
+  }
+  &&:disabled {
+    opacity: 0.5;
+  }
+
+  &&.ComboBox-big,
+  &&.ComboBox-medium {
+    background: none;
+    border: none;
+    font-weight: lighter;
+    padding: ${REMConvert.pixels.rem(6)}rem 0.7rem;
+    opacity: 0.7;
+  }
+
+  &&.ComboBox-big {
+    font-size: 2.7rem;
+  }
+  &&.ComboBox-medium {
+    font-size: 1.9rem;
+  }
+
+  &&.ComboBox-big:hover:not(:disabled),
+  &&.ComboBox-big:focus:not(:disabled),
+  &&.ComboBox-big:active:not(:disabled),
+  &&.ComboBox-medium:hover:not(:disabled),
+  &&.ComboBox-medium:focus:not(:disabled),
+  &&.ComboBox-medium:active:not(:disabled) {
+    background: none;
+    opacity: 1;
+  }
+  &&.ComboBox-big:disabled,
+  &&.ComboBox-medium:disabled {
+    opacity: 0.4;
+  }
+
+  && .ComboBox-button-inner {
+    display: inline-flex;
+    flex-direction: row;
+    gap: 0.9rem;
+  }
+  &&.rtl .ComboBox-button-inner {
+    flex-direction: row-reverse;
+  }
+
+  && .ComboBox-button-arrow {
+    display: inline-flex;
+    flex-grow: 2;
+    flex-direction: row;
+    opacity: 0.7;
+  }
+  &&.rtl .ComboBox-button-arrow {
+    flex-direction: row-reverse;
+  }
 `;
 
 // style sheet for the dropdown (sibling of the ComboBox button)
 const ComboBoxDropdown = styled.div<{
-  //
+  $option_background: string,
+  $option_foreground: string,
+  $option_border: string,
+  $selected_foreground_color: string,
 }> `
+  && {
+    display: inline-flex;
+    visibility: hidden;
+    flex-direction: column;
+    position: fixed;
+    z-index: ${MAXIMUM_Z_INDEX};
+  }
+
+  &&:not(.running-effect) {
+    background: ${$ => $.$option_background};
+    border: 0.15rem solid ${$ => $.$option_border};
+  }
+
+  &&.ComboBox-big:not(.running-effect),
+  &&.ComboBox-medium:not(.running-effect) {
+    border: 0.3rem solid ${$ => $.$option_border};
+  }
+
+  && .ComboBox-list {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: none;
+    flex-grow:3;
+  }
+
+  && .ComboBox-up-arrow,
+  && .ComboBox-down-arrow {
+    color: ${$ => $.$option_foreground};
+    display: none;
+  }
+
+  &&.arrows-visible .ComboBox-up-arrow,
+  &&.arrows-visible .ComboBox-down-arrow {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: ${REMConvert.pixels.remPlusUnit(7.5)};
+  }
+
+  && .ComboBox-list > .Option {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    padding: ${REMConvert.pixels.rem(6) + 0.15}rem 0.7rem;
+    background: ${$ => $.$option_background};
+    border: none;
+    outline: none;
+    color: ${$ => $.$option_foreground};
+    font-size: inherit;
+  }
+  &&.rtl .ComboBox-list > .Option {
+    flex-direction: row-reverse;
+  }
+  &&.ComboBox-big .ComboBox-list > .Option,
+  &&.ComboBox-medum .ComboBox-list > .Option {
+    font-size: 1.5rem;
+    font-weight: lighter;
+  }
+  &&.running-effect .ComboBox-list > .Option {
+    border-left: 0.15rem solid ${$ => $.$option_border};
+    border-right: 0.15rem solid ${$ => $.$option_border};
+  }
+  &&.ComboBox-big.running-effect .ComboBox-list > .Option,
+  &&.ComboBox-medium.running-effect .ComboBox-list > .Option {
+    border-left: 0.3rem solid ${$ => $.$option_border};
+    border-right: 0.3rem solid ${$ => $.$option_border};
+  }
+  && .ComboBox-list > .Option:focus {
+    background: ${$ => ColorUtils.contrast($.$option_background, 0.3)};
+  }
+  && .ComboBox-list > .Option:active,
+  && .ComboBox-list > .Option[data-selected="true"] {
+    background: ${$ => ColorUtils.contrast($.$option_background, 0.5)};
+  }
+  && .ComboBox-list > .Option[data-selected="true"] {
+    color: ${$ => $.$selected_foreground_color};
+  }
+  &&:not(.running-effect) .ComboBox-list > .Option:disabled {
+    opacity: 0.5;
+  }
 `;
 
 type ComboBoxGlobalHandlers = {

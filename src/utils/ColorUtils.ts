@@ -27,31 +27,31 @@ export function enhance({ background, color }: {
   if (like(a, b)) {
     let r = a.isDark() ? lighten(b, 0.25) : darken(b, 0.25);
     r = a.isDark()
-      ? Color(r).isDark()
+      ? (Color(r).isDark()
         ? lighten(r, 0.25)
-        : r
-      : Color(r).isLight()
+        : r)
+      : (Color(r).isLight()
         ? darken(r, 0.25)
-        : r;
+        : r);
     return r;
   }
   let r = (
     a.isDark()
-      ? b.isDark()
+      ? (b.isDark()
         ? lighten(b, 0.25)
-        : b
-      : b.isLight()
+        : b)
+      : (b.isLight()
         ? darken(b, 0.25)
-        : b
+        : b)
   ).toString();
   r = (
     a.isDark()
-      ? Color(r).isDark()
+      ? (Color(r).isDark()
         ? lighten(r, 0.25)
-        : r
-      : Color(r).isLight()
+        : r)
+      : (Color(r).isLight()
         ? darken(r, 0.25)
-        : r
+        : r)
   ).toString();
   return b.toString();
 }
