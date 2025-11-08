@@ -75,17 +75,6 @@ export function Button(params: ButtonParams) {
       Button_comp = BigButton;
       break;
     }
-    case "smallDropdown": {
-      color =
-        prefer_primary
-          ? Color(
-              ColorUtils.enhance({ background: theme.colors.background, color: theme.colors.primary }),
-            ).alpha(0.67)
-          : Color(theme.colors.foreground).alpha(0.67);
-
-      Button_comp = SmallDropdownButton;
-      break;
-    }
     case "anchor": {
       color = theme.colors.anchor ?? "#000";
       hover_color = ColorUtils.lighten(color, 0.3).toString();
@@ -242,16 +231,7 @@ export function Button(params: ButtonParams) {
         onTouchMove={params.touchMove}
         onTouchCancel={params.touchCancel}
       >
-        {params.variant == "smallDropdown" ? (
-          <>
-            <div className="button-small-inner">{params.children}</div>
-            <div className="button-small-arrow">
-              <Icon type={NativeIcons.ARROW_DOWN} size={8} />
-            </div>
-          </>
-        ) : (
-          params.children
-        )}
+        {params.children}
       </Button>
       {tooltip === undefined ? undefined : (
         <TooltipDiv
@@ -271,7 +251,6 @@ export function Button(params: ButtonParams) {
 export type ButtonVariant =
   | "none"
   | "big"
-  | "smallDropdown"
   | "anchor"
   | "primary"
   | "secondary"
@@ -416,50 +395,6 @@ const BigButton = styled.button<ButtonCSSProps>`
 
   &&:disabled {
     opacity: 0.6;
-  }
-`;
-
-// small dropdown
-
-const SmallDropdownButton = styled.button<ButtonCSSProps>`
-  && {
-    background: none;
-    border: none;
-    color: ${($) => $.$color.toString()};
-    font-size: 0.79rem;
-    display: flex;
-    gap: 0.2rem;
-    flex-direction: ${($) => (!$.$rtl ? "row" : "row-reverse")};
-    align-items: center;
-    padding: ${REMConvert.pixels.rem(3)}rem 0.7rem;
-    outline: none;
-  }
-
-  &&:hover:not(:disabled),
-  &&:focus:not(:disabled) {
-    color: ${($) => ($.$color as Color).alpha(0.8).toString()};
-  }
-
-  &&:active:not(:disabled) {
-    color: ${($) => ($.$color as Color).alpha(1).toString()};
-  }
-
-  &&:disabled {
-    opacity: 0.4;
-  }
-
-  && .button-small-inner {
-    display: inline-flex;
-    flex-direction: ${($) => (!$.$rtl ? "row" : "row-reverse")};
-    gap: 0.9rem;
-  }
-
-  && .button-small-arrow {
-    display: inline-flex;
-    color: ${$ => $.$theme.colors.foreground};
-    flex-grow: 2;
-    flex-direction: ${($) => (!$.$rtl ? "row-reverse" : "row")};
-    opacity: 0.7;
   }
 `;
 
