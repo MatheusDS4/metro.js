@@ -69,7 +69,7 @@ Baseline group.
 
 # PopoverMenu
 
-- [ ] Done
+- [x] Done
   - [x] Skin `&&`
   - [x] Skin Items
   - [x] Skin Indicator
@@ -79,12 +79,12 @@ Baseline group.
     - [x] .close() method (closes the menu and its submenus)
   - [x] Open logic
   - [x] Close logic
-  - [ ] Hovering a submenu representation's item should open the submenu (without focusing any of its items) and close the previously open siblings.
+  - [x] Hovering a submenu representation's item should open the submenu (without focusing any of its items) and close the previously open siblings.
   - [x] Clicking outside the open popover menu should close it and other open submenus.
-  - [ ] Clicking a submenu Item should open its PopoverMenu (the submenu)
+  - [x] Clicking a submenu Item should open its PopoverMenu (the submenu)
   - [x] Escape key (closes the innermost popover menu)
     - [x] Focus submenu-representing item back if the case
-  - [70%] Open submenu representation items should be highlighted as focused. (`data-open='true'`)
+  - [x] Open submenu representation items should be highlighted as focused. (`data-open='true'`)
     - [x] Skin them
   - [x] Arrow navigation
     - [x] Left/right (close/open submenu)
