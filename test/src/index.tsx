@@ -40,21 +40,6 @@ function App() {
               overflowY: "auto",
             }}>
             <VGroup padding={10}>
-              <ComboBox default="foo">
-                <Option value="foo">foo</Option>
-                <Option value="bar">bar</Option>
-                <Option value="qux">qux</Option>
-              </ComboBox>
-              <ComboBox big>
-                <Option value="foo">foo</Option>
-                <Option value="bar">bar</Option>
-                <Option value="qux">qux</Option>
-              </ComboBox>
-              <ComboBox default="foo" medium>
-                <Option value="foo">foo</Option>
-                <Option value="bar">bar</Option>
-                <Option value="qux">qux</Option>
-              </ComboBox>
             </VGroup>
           </Root>
         </Primary>

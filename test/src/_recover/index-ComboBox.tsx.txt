@@ -1,0 +1,83 @@
+// register Metro design fonts
+import "@hydroperx/metrodesign/fonts";
+
+// third-party
+import { createRoot } from "react-dom/client";
+import * as React from "react";
+import {
+  Root,
+  Group,
+  HGroup,
+  VGroup,
+  Button,
+  Label,
+  Icon,
+  NativeIcons,
+  ComboBox,
+  Option,
+} from "@hydroperx/metrodesign/components";
+import { RTLProvider } from "@hydroperx/metrodesign/layout";
+import {
+  Primary,
+  ThemePresets,
+  ThemeProvider,
+  type Theme,
+} from "@hydroperx/metrodesign/theme";
+
+/**
+ * The test.
+ */
+function App() {
+  return (
+    <ThemeProvider theme={ThemePresets.dark}>
+      <RTLProvider rtl={false}>
+        <Primary prefer>
+          <Root
+            full
+            solid
+            selection={false}
+            style={{
+              overflowY: "auto",
+            }}>
+            <VGroup padding={10}>
+              <ComboBox default="foo">
+                <Option value="foo">foo</Option>
+                <Option value="bar">bar</Option>
+                <Option value="qux">qux</Option>
+              </ComboBox>
+              <ComboBox big>
+                <Option value="foo">foo</Option>
+                <Option value="bar">bar</Option>
+                <Option value="qux">qux</Option>
+              </ComboBox>
+              <ComboBox default="foo" medium>
+                <Option value="foo">foo</Option>
+                <Option value="bar">bar</Option>
+                <Option value="qux">qux</Option>
+                <Option value="foo1">foo1</Option>
+                <Option value="bar1">bar1</Option>
+                <Option value="qux1">qux1</Option>
+                <Option value="foo2">foo2</Option>
+                <Option value="bar2">bar2</Option>
+                <Option value="qux2">qux2</Option>
+                <Option value="foo3">foo3</Option>
+                <Option value="bar3">bar3</Option>
+                <Option value="qux3">qux3</Option>
+                <Option value="foo4">foo4</Option>
+                <Option value="bar4">bar4</Option>
+                <Option value="qux4">qux4</Option>
+                <Option value="foo5">foo5</Option>
+                <Option value="bar5">bar5</Option>
+                <Option value="qux5">qux5</Option>
+              </ComboBox>
+            </VGroup>
+          </Root>
+        </Primary>
+      </RTLProvider>
+    </ThemeProvider>
+  );
+}
+
+// Render App
+const root = createRoot(document.getElementById("root")!);
+root.render(<App />);
