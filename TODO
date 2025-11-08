@@ -99,6 +99,7 @@ Each item must contain three tags: the icon, the label, and the ending (usually 
 # ComboBox
 
 - [ ] Done
+  - [ ] When displaying the selected option as the ComboBox main display itself, strip icons (`.Icon`) off.
   - [ ] Prevent scrolling on the entire document while a ComboBox is open
 
 # CheckBox

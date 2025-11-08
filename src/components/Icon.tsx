@@ -255,7 +255,7 @@ export function Icon(params: IconParams) {
       draggable={false}
       alt={type}
       style={params.style}
-      className={params.className}
+      className={["Icon", ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
       id={params.id}
       $computed_size={computed_size}
     ></Img>

@@ -14,3 +14,5 @@ export * from "./Item";
 export * from "./Indicator";
 export * from "./Separator";
 export * from "./MenuTrigger";
+export * from "./ComboBox";
+export * from "./Option";
