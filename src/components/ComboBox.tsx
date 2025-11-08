@@ -151,6 +151,8 @@ export function ComboBox(params: {
         className={[
           "ComboBox",
           ...(rtl ? ["rtl"] : []),
+          ...(params.big ? ["ComboBox-big"] : []),
+          ...(params.medium ? ["ComboBox-medium"] : []),
           ...(params.className ?? "").split(" ").filter(c => c != "")
         ].join(" ")}
         style={params.style}
