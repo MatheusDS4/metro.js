@@ -6,6 +6,7 @@ import { Color } from "@hydroperx/color";
 import { input } from "@hydroperx/inputaction";
 import gsap from "gsap";
 import * as FloatingUI from "@floating-ui/dom";
+import $ from "jquery";
 
 // local
 import { RTLContext } from "../layout/RTL";
@@ -71,11 +72,27 @@ export function PopoverMenu(params: {
     }
     div_el.addEventListener("_PopoverMenu_close", external_close_request as any);
 
+    // handle pointer enter
+    function pointer_enter(): void {
+      div_el.setAttribute("data-hover", "true");
+    }
+    div_el.addEventListener("pointerenter", pointer_enter);
+
+    // handle pointer leave
+    function pointer_leave(): void {
+      div_el.removeAttribute("data-hover");
+    }
+    div_el.addEventListener("pointerleave", pointer_leave);
+
     // cleanup
     return () => {
       // dispose of external request handlers
       div_el.removeEventListener("_PopoverMenu_open", external_open_request as any);
       div_el.removeEventListener("_PopoverMenu_close", external_close_request as any);
+
+      // dispose of pointer handlers
+      div_el.removeEventListener("pointerenter", pointer_enter);
+      div_el.removeEventListener("pointerleave", pointer_leave);
 
       // dispose of global handlers if any
       dispose_global_handlers();
@@ -316,28 +333,72 @@ export function PopoverMenu(params: {
     dispose_global_handlers();
 
     // handle pointer down anywhere the viewport
-    global_handlers.current.pointerDown = function(): void {
-      fixme();
-    };
+    global_handlers.current.pointerDown = global_pointer_down;
     window.addEventListener("pointerdown", global_handlers.current.pointerDown as any);
 
     // handle input pressed
-    global_handlers.current.inputPressed = function(e: Event): void {
-      fixme();
-    };
+    global_handlers.current.inputPressed = input_pressed;
     input.on("inputPressed", global_handlers.current.inputPressed as any);
 
     // handle key down
-    global_handlers.current.keyDown = function(e: KeyboardEvent): void {
-      fixme();
-    };
+    global_handlers.current.keyDown = key_down;
     window.addEventListener("keydown", global_handlers.current.keyDown as any);
 
     // handle wheel
-    global_handlers.current.wheel = function(e: WheelEvent): void {
-      fixme();
-    };
+    global_handlers.current.wheel = global_wheel;
     window.addEventListener("wheel", global_handlers.current.wheel as any);
+  }
+
+  // handle pointer down on the viewport
+  function global_pointer_down(): void {
+    const div_el = div.current!;
+    if (div_el.getAttribute("data-open") !== "true") {
+      return;
+    }
+
+    // if clicking outside opened PopoverMenus, close them.
+
+    // test hover
+    let out = true;
+    if ($(div_el).is(":visible")) {
+      if (div_el.getAttribute("data-hover") == "true") {
+        out = false;
+      }
+
+      if (out) {
+        for (const div1 of Array.from(
+          get_content_div().querySelectorAll(".PopoverMenu")
+        ) as HTMLDivElement[]) {
+          if ($(div1).is(":hidden")) {
+            continue;
+          }
+          // Test hover
+          if (div1.getAttribute("data-hover") == "true") {
+            out = false;
+            break;
+          }
+        }
+      }
+    }
+
+    if (out) {
+      close();
+    }
+  }
+
+  // handle input pressed
+  function input_pressed(e: Event): void {
+    fixme();
+  }
+
+  // handle key down
+  function key_down(e: KeyboardEvent): void {
+    fixme();
+  }
+
+  // handle wheel event on the viewport
+  function global_wheel(e: WheelEvent): void {
+    fixme();
   }
 
   // unregister global event handlers used by the root
