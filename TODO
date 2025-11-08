@@ -76,7 +76,7 @@ Each item must contain three tags: the icon, the label, and the ending (usually 
 ```
 <PopoverMenu>
   <Item>
-    <span><Icon native={NativeIcons.INTERNET_EXPLORER}/></span>
+    <span><Icon type={NativeIcons.INTERNET_EXPLORER}/></span>
     <Label>Internet Explorer</Label>
     <span>Ctrl+E</span>
   </Item>
@@ -95,12 +95,6 @@ Each item must contain three tags: the icon, the label, and the ending (usually 
   </PopoverMenu>
 </PopoverMenu>
 ```
-
-# Page
-
-Way contextual; skinning and behavior relies on surrounding container. It is basically used within live tiles.
-
-- [ ] Done
 
 # ComboBox
 
@@ -135,6 +129,12 @@ Way contextual; skinning and behavior relies on surrounding container. It is bas
 - [ ] Support background-based live tiles by creating masks (which also alter while dragging a tile), similiar to Windows Phone.
   - [ ] In that case, the container of groups should display a background that serves as the "border". That container will also contain the masks that warp to the parent's background.
   - [ ] Mask off group's remaining empty area.
+
+# Page
+
+Way contextual; skinning and behavior relies on surrounding container. It is basically used within live tiles.
+
+- [ ] Done
 
 # Icons
 
