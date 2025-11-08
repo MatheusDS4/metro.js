@@ -77,7 +77,14 @@ export function ComboBox(params: {
 
   // value vars
   const [value_html, set_value_html] = React.useState("");
-  const value_sync = React.useRef("");
+  const value_sync = React.useRef(params.default ?? "");
+  const changed = React.useRef(false);
+
+  // handler sync
+  const change_handler_sync = React.useRef<null | ((value: string) => void)>(params.change);
+
+  // rem
+  const rem = React.useRef(16);
 
   // ?rtl
   const rtl = React.useContext(RTLContext);
@@ -94,6 +101,13 @@ export function ComboBox(params: {
     ColorUtils.enhance({ color: theme.colors.primary, background: theme.colors.inputBackground }) :
     theme.colors.foreground;
 
+  // used for aborting the opening/closing effect
+  const effect_aborter = React.useRef<AbortController | null>(null); 
+  
+  // typing cache
+  const key_sequence_reference = React.useRef<string>("");
+  const key_sequence_last_timestamp = React.useRef<number>(0);
+
   // initialization
   React.useEffect(() => {
     const combobox_el = combobox.current!;
@@ -103,11 +117,14 @@ export function ComboBox(params: {
 
     // handle external "_ComboBox_reflect" event
     function external_reflect(): void {
-      // search for:
-      //
-      //   function reflect() {
-      //
-      // in old ComboBox
+      // here, update the DOM to reflect the
+      // actually selected Option.
+
+      // the following timeout is used since there may be
+      // many Options triggering reflection,
+      // so this reflection will only actually
+      // happen after the last Option, for performance.
+
       if (reflect_timeout != -1) {
         window.clearTimeout(reflect_timeout);
       }
@@ -134,11 +151,20 @@ export function ComboBox(params: {
     }
     combobox_el.addEventListener("_ComboBox_reflect", external_reflect);
 
+    // observe the cascading rem
+    const rem_observer = new REMObserver(value => {
+      rem.current = value;
+    });
+
     // cleanup
     return () => {
       combobox_el.removeEventListener("_ComboBox_reflect", external_reflect);
+
       // dispose of global handlers
       dispose_global_handlers();
+
+      // dispose of REMObserver
+      rem_observer.cleanup();
     };
   }, []);
 
@@ -151,6 +177,20 @@ export function ComboBox(params: {
   React.useEffect(() => {
     rtl_sync.current = rtl;
   }, [rtl]);
+
+  // check if default value has changed
+  React.useEffect(() => {
+    if (!changed.current) {
+      value_sync.current = params.default ?? "";
+      combobox.current!.dispatchEvent(new Event("_ComboBox_reflect"));
+      params.change?.(value_sync.current);
+    }
+  }, [params.default]);
+  
+  // sync `change` handler
+  React.useEffect(() => {
+    change_handler_sync.current = params.change;
+  }, [params.change]);
 
   // returns the HTML of an element stripping Icons off.
   function extract_compact_html(element: HTMLElement): string {
