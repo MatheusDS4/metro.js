@@ -128,7 +128,7 @@ export function Item(params: {
           popoverMenu.dispatchEvent(new CustomEvent("_PopoverMenu_open", {
             detail: p,
           }));
-        }, 500);
+        }, 250);
       }
       return;
     }

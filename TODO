@@ -70,9 +70,8 @@ Baseline group.
 # PopoverMenu
 
 - [x] Done
-- [ ] Close popover menus when clicking a non-submenu Item
 
-Each item must contain three tags: the icon, the label, and the ending (usually a shortcut or submenu indicator). All of them, except the label, are wrapped in a `span`. For an item representing a submenu, there is an extra tag being the sub-popover-menu.
+Each item must contain three tags: the icon, the label, and the ending (usually a shortcut or submenu indicator). All of them, except the label, are wrapped in a `span`. For an item representing a submenu, there is a following sibling tag being the sub-popover-menu.
 
 ```
 <PopoverMenu>
@@ -96,31 +95,6 @@ Each item must contain three tags: the icon, the label, and the ending (usually 
   </PopoverMenu>
 </PopoverMenu>
 ```
-
-# MenuTrigger
-
-Used for triggering a `PopoverMenu` from the direct button child.
-
-- [x] Done (use the custom event `_PopoverMenu_open` with `CustomEvent<PopoverMenuOpenParams>`)
-  - [x] prefer (SimplePlacementType)
-
-# Item
-
-Way contextual; skinning and behavior relies on surrounding container (e.g. `PopoverMenu`).
-
-- [x] Done
-
-# Separator
-
-Way contextual; skinning and behavior relies on surrounding container (e.g. `PopoverMenu`).
-
-- [x] Done
-
-# Option
-
-Way contextual; skinning and behavior relies on surrounding container (e.g. `ComboBox`).
-
-- [x] Done
 
 # Page
 

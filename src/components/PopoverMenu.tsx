@@ -356,7 +356,7 @@ export function PopoverMenu(params: {
 
     // handle wheel
     global_handlers.current.wheel = global_wheel;
-    window.addEventListener("wheel", global_handlers.current.wheel as any, { passive: true });
+    window.addEventListener("wheel", global_handlers.current.wheel as any, { passive: false });
   }
 
   // handle pointer down on the viewport
@@ -700,6 +700,8 @@ const Div = styled.div<{
 
   /* ending reserved space for an Item */
   && > .PopoverMenu-content > .Item > span:nth-child(3) {
+    display: flex;
+    flex-direction: row;
     flex-grow: 4;
     font-size: 0.8rem;
     opacity: 0.6;
@@ -707,8 +709,6 @@ const Div = styled.div<{
     min-height: ${REMConvert.pixels.remPlusUnit(20)};
   }
   &&:not(.rtl) > .PopoverMenu-content > .Item > span:nth-child(3) {
-    display: flex;
-    flex-direction: row;
     justify-content: end;
     margin-left: 2rem;
   }
