@@ -409,8 +409,82 @@ export class SimpleGroup {
   }
 
   // shift conflicting tiles.
-  private resolveConflicts(targetId: string): boolean {
-    fixme();
+  //
+  // `ignore` is the list of tiles not to shift.
+  // it grows as tiles are shifted and must not be
+  // shifted anymore.
+  private resolveConflicts(targetId: string, ignore: null | string[] = null, shiftDirection: null | ShiftDirection = null): boolean {
+    ignore ??= [targetId];
+    let conflicting_tiles = this.getIntersectingTiles(this.tiles.get(targetId)!, targetId);
+    conflicting_tiles = conflicting_tiles.filter(id => !ignore!.includes(id));
+    if (conflicting_tiles.length == 0) {
+      return true;
+    }
+    const target_tile = this.tiles.get(targetId)!;
+    conflicts: for (const conflicting_id of conflicting_tiles) {
+      const conflicting_tile = this.tiles.get(conflicting_id)!;
+
+      // intersection side (target intersects X side of conflicting tile)
+      const side = target_tile.intersectsSideOf(conflicting_tile)!;
+
+      // normally shift occurs only in one axis, but
+      // if it's cheap to shift at the other axis,
+      // then do it.
+
+      // horizontal-layout: cheap shift
+      if (
+        this.isHorizontal && (side == "left" || side == "right")
+          && target_tile.width == conflicting_tile.width
+          && target_tile.height == conflicting_tile.height
+          && target_tile.y == conflicting_tile.y
+      ) {
+        let cheap_space: null | Tile = null;
+        if (side == "left") {
+          cheap_space = new Tile(target_tile.x + target_tile.width, target_tile.y, conflicting_tile.width, conflicting_tile.height);
+        } else {
+          cheap_space = new Tile(target_tile.x - target_tile.width, target_tile.y, conflicting_tile.width, conflicting_tile.height);
+        }
+        if (cheap_space!.x >= 0 && this.getIntersectingTiles(cheap_space!, "").length == 0) {
+          conflicting_tile.x = cheap_space!.x;
+          conflicting_tile.y = cheap_space!.y;
+          continue conflicts;
+        }
+      // vertical-layout: cheap shift
+      } else if (
+        (side == "top" || side == "bottom")
+          && target_tile.width == conflicting_tile.width
+          && target_tile.height == conflicting_tile.height
+          && target_tile.x == conflicting_tile.x
+      ) {
+        let cheap_space: null | Tile = null;
+        if (side == "top") {
+          cheap_space = new Tile(target_tile.x, target_tile.y + target_tile.height, conflicting_tile.width, conflicting_tile.height);
+        } else {
+          cheap_space = new Tile(target_tile.x, target_tile.y - target_tile.height, conflicting_tile.width, conflicting_tile.height);
+        }
+        if (cheap_space!.x >= 0 && this.getIntersectingTiles(cheap_space!, "").length == 0) {
+          conflicting_tile.x = cheap_space!.x;
+          conflicting_tile.y = cheap_space!.y;
+          continue conflicts;
+        }
+      }
+
+      if (!shiftDirection) {
+        if (this.isHorizontal) {
+          shiftDirection = side == "top" ? "downward" : "upward";
+        } else {
+          shiftDirection = side == "left" ? "rightward" : "leftward";
+        }
+      }
+
+      switch (shiftDirection!) {
+        //
+      }
+
+      fixme();
+    }
+
+    return true;
   }
 
   // returns a copy of the tile data.
@@ -425,3 +499,5 @@ export class SimpleGroup {
     this.tiles = new Map(snapshot);
   }
 }
+
+type ShiftDirection = "upward" | "downward" | "leftward" | "rightward";
