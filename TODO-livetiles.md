@@ -1,0 +1,85 @@
+The small tiles unit (1x1) is used for positioning and sizing of tiles. There are small (1x1), medium (2x2), wide (4x2) and large (4x4) sizes, but in this layout logic we will deal with any size.
+
+- A class `Tile`
+  - That has a constructor `Tile(int x, int y, int width, int height)`
+  - That has fields `int X`, `int Y`, `int Width` and `int Height`, all specified in small tiles unit (1x1).
+- A class `Tiles`
+  - That identifies tiles by an `Id` (the tile ID).
+  - That positions tiles using small tiles unit (1x1).
+  - That constrains tiles to minimum positions (0, 0)
+  - That supports stablishing either a maximum width (`int? MaxWidth`) or maximum height (`int? MaxHeight`) in small tiles unit (1x1).
+  - That provides a getter `bool IsHorizontal`, which returns true if `MaxHeight` is non-null; in other words, indicates whether the layout is horizontal.
+  - That provides a getter `bool IsVertical`, which returns true if `MaxWidth` is non-null; in other words, indicates whether the layout is vertical.
+  - Whose constructor signature is `Tiles(TilesParams parameters)`
+    - Assert that one of either `parameters.MaxWidth` and `parameters.MaxHeight` is `null`: one must be `null` and the other non-`null`.
+  - That may constrain tiles to maximum positions
+    - If there is a set `MaxWidth`, then maximum X = `MaxWidth`
+    - If there is a set `MaxHeight`, then maximum Y = `MaxHeight`
+  - That has a public method `Dictionary<string, Tile> GetTiles()` returning a mapping of tile IDs to tile information (a deep clone of the tile data).
+  - That supports a `bool AddTile(string id, int? x, int? y, int width, int height)` method for adding a tile.
+    - If either `x` or `y` are `null`, assert that both `x` and `y` are `null`.
+    - If `x` and `y` are non-`null`:
+      - Save a snapshot of the tiles.
+      - Add tile `id` to the specified (x, y) position with the given size.
+      - Call `fitBaseTile(id, tile)`
+      - If `resolveConflicts(id)` is true
+        - Call `fillMinimumPosition();`
+        - Call `compact();`
+        - Return `true`.
+      - Otherwise, restore snapshot of the tiles.
+      - Return `false`.
+    - If `x` and `y` are `null`, the tile is positioned at the best *last* position.
+      - The best *last* position is determined based on the layout direction, starting from position (0, 0):
+        - If `IsHorizontal`, then scan vertically until there is space available; otherwise, move on the next column.
+        - If `IsVertical`, then scan horizontally until there is space available; otherwise, move on the next row.
+      - If the resulting (x,y) leave holes between other tile clusters, then snap the resulting (x,y) so there is no hole between other tiles (e.g. ensure they are contiguous).
+    - Return `true`.
+  - That supports a `bool HasTile(string id)` method.
+  - That supports a `bool MoveTile(string id, int x, int y)` method.
+    - Save a snapshot of the tiles.
+    - Move tile `id` to the specified (x, y) position.
+    - Call `fitBaseTile(id, tile)`
+    - If `resolveConflicts(id)` is true
+      - Call `fillMinimumPosition();`
+      - Call `compact();`
+      - Return `true`.
+    - Otherwise, restore snapshot of the tiles.
+    - Return `false`.
+  - That supports a `TilesSize GetLayoutSize()` method for retrieving the overall width and height in small tiles unit (1x1). Count `MaxWidth ?? 0` and `MaxHeight ?? 0`.
+  - That supports a `bool ResizeTile(string id, int width, int height)` method.
+    - If tile to resize is out of bounds, return `false`.
+    - Save a snapshot of the tiles.
+    - Resize tile `id` to the specified size.
+    - If `resolveConflicts(id)` is true, return `true`.
+    - Otherwise, restore snapshot of the tiles.
+    - Return `false`.
+  - That supports a `void RemoveTile(string id)` method.
+    - Neighbour tiles that are below (i.e. `neighbour.Y > removed.Y && neighbour.X >= removed.X && neighbour.X + neighbour.Width <= removed.X + removed.Width`) are pushed towards the removed tile's position.
+    - Call `fillMinimumPosition();`
+    - Call `compact();`
+  - That supports a `void Clear()` method.
+  - That implements an internal method `bool resolveConflicts(string targetId)`
+    - What it does is, basically, shift other tiles conflicting with the `targetId` tile somewhere else; specifically:
+      - If `IsHorizontal`, conflicting tiles are shifted either *upward* (i.e. shift to previous row; if failed due to min/max constraints, then try shifting to previous column from Y=`MaxHeight`), or *downward* (i.e., first try shifting to next rows; if failed due to min/max constraints, then try to next column from Y=0), or *leftward* (i.e. try shifting to the previous columns), or *rightward* (i.e. try shifting to the next columns), maintaining their original order (e.g. shift tile clusters together), shifting around their original position.
+      - If `IsVertical`, conflicting tiles are shifted either *leftward* (i.e. first try shifting to previous columns; if failed due to min/max constraints, then try to previous rows from X=`MaxWidth`) or *rightward* (i.e., first try to next columns; then try to next rows from X=0), or *upward* (i.e. try to previous rows), or *downward* (i.e. try to next rows), maintaining their original order (e.g. shift tile clusters together), shifting around their original position.
+      - Shifting a tile will shift any other conflicting tile (except `targetId` and the previously shifted tiles) at the same shift direction (quite like a snail); but as stated above, it might require looking at previous/next row/column.
+      - Conflicting tiles are shifted either *upward*, *downward*, *leftward* or *rightward* depending on the intersection area of `targetId` and the closest intersecting tile (e.g., if `targetId` is intersecting mostly at the bottom of the closest intersecting tile, then tiles are shifted *upward*; if mostly at the top, then *downward*; if mostly at the left, then *rightward*; if mostly at the right, then *leftward*).
+      - If there is no way to shift a tile further (e.g. because they hit the minimum positions), then exit the `resolveConflicts()` method by returning `false`.
+  - That implements an internal method `void compact()` for removing holes between tiles.
+    - If there are holes between tiles, snap tile clusters such that there are no holes anymore (e.g. undo horizontal holes by snapping clusters from right to left; undo vertical holes by snapping clusters from the bottom to the top).
+  - That implements an internal method `void fillMinimumPosition()`.
+    - If there are any tiles and the position (0, 0) is not occupied, snap tile clusters such that the position (0, 0) is occupied.
+  - That implements an internal method `void fitBaseTile(string tileId, Tile tile)`
+    - If the tile does not overflow the container
+      - Exit
+    - Walk the overflowing position in rows/columns and slightly increase/decrease the necessary for the tile to fit in. Important when switching from horizontal to vertical layout.
+      - Whether to go rows-first or columns-first primarily that depends on what axis the overflow occurs.
+      - Note that while doing this, conflicting tiles must be skipped until there is no conflicting tile (how they are skipped, again, depends on what axis the overflow occurs).
+  - That provides an utility method for determining whether a rectangle fully enters a tile. Useful for implementing folders.
+    - Folder implementation would be like "drag tile over another": if it hadn't began 'merging into a folder', then begin and stay so for 1.5 secs; if already, then move tile instead.
+- A `TilesParams` struct with
+  - `public int? MaxWidth = null;`
+  - `public int? MaxHeight = null;`
+- A `TilesSize` struct with
+  - `public int Width;`
+  - `public int Height;`
