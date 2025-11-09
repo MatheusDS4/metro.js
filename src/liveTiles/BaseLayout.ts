@@ -242,9 +242,11 @@ export class BaseLayout {
       // If the resulting (x,y) leave holes between other tile clusters,
       // then snap the resulting (x,y) so there is no hole between other tiles
       // (e.g. ensure they are contiguous).
-      const [horizontal_hole, vertical_hole] = this.findHoles(x, y);
+      const [horizontal_hole, vertical_hole] = this.findHoles(x, y, width, height);
       x -= horizontal_hole;
       y -= vertical_hole;
+      // Contribute tile.
+      this.tiles.set(id, new BaseTile(x!, y!, width, height));
     }
     return true;
   }
@@ -325,8 +327,51 @@ export class BaseLayout {
 
   // Find holes (horizontal, vertical) between
   // a given position and tile clusters.
-  private findHoles(x: number, y: number): [number, number] {
+  private findHoles(x: number, y: number, width: number, height: number): [number, number] {
+    let testTile = new BaseTile(x, y, 1, height);
+    let horizontal_holes = 0;
+    let vertical_holes = 0;
+    for (let dec_x = x; dec_x > 0;) {
+      testTile.x = --dec_x;
+      if (this.getIntersectingTiles(testTile, "").length === 0) {
+        horizontal_holes++;
+      } else {
+        break;
+      }
+    }
+    testTile.width = width;
+    testTile.height = 1;
+    testTile.x = x;
+    for (let dec_y = y; dec_y > 0;) {
+      testTile.y = --dec_y;
+      if (this.getIntersectingTiles(testTile, "").length === 0) {
+        vertical_holes++;
+      } else {
+        break;
+      }
+    }
+    return [horizontal_holes, vertical_holes];
+  }
+
+  // In case a tile overflows the container, change its position
+  // so it fits the container.
+  private fit(tileId: string, tile: BaseTile): void {
+    const overflow = this.isHorizontal ? tile.y - this.maxHeight! : tile.x - this.maxWidth!;
+    if (overflow < 0) {
+      // no overflow: exit
+      return;
+    }
+
+    // Walk the overflowing position in rows/columns and
+    // slightly increase/decrease the necessary for the tile to fit in.
+    // Important when switching from horizontal to vertical layout.
     //
+    // - Whether to go rows-first or columns-first primarily
+    //   that depends on what axis the overflow occurs.
+    // - Note that while doing this, conflicting tiles must be skipped
+    //   until there is no conflicting tile (how they are skipped,
+    //   again, depends on what axis the overflow occurs).
+    fixme();
   }
 
   // Returns a copy of the tile data.
