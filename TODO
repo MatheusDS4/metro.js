@@ -132,6 +132,8 @@ Each item must contain three tags: the icon, the label, and the ending (usually 
 # Live tiles
 
 - [ ] Done
+  - [ ] Group/tile components do refresh the parent live tiles component on initialization.
+  - [ ] Group/tile components must signal the parent live tiles component when certain properties change (like x, y, size... group index)
 - [ ] Support background-based live tiles by creating masks (which also alter while dragging a tile), similiar to Windows Phone.
   - [ ] In that case, the container of groups should display a background that serves as the "border". That container will also contain the masks that warp to the parent's background.
   - [ ] Mask off group's remaining empty area.
