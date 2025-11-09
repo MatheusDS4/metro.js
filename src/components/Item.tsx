@@ -106,29 +106,36 @@ export function Item(params: {
     const parentPopoverMenu = get_parent_popover_menu();
     const popoverMenu = get_popover_menu();
     if (parentPopoverMenu) {
-      button.current!.focus();
-      // close other sibling menus
-      for (const other of parentPopoverMenu!.children[1].children) {
-        if (other === button.current!) {
-          continue;
+      const last_button = parseInt(parentPopoverMenu!.getAttribute("data-last-button") ?? "0");
+
+      // make sure to not focus/open item if pressed a button
+      // too recently.
+      if (Date.now() > last_button + 1_000) {
+        button.current!.focus();
+
+        // close other sibling menus
+        for (const other of parentPopoverMenu!.children[1].children) {
+          if (other === button.current!) {
+            continue;
+          }
+          if (other.classList.contains("Item") && other.getAttribute("data-open") == "true") {
+            other.removeAttribute("data-open");
+            other.nextElementSibling!.dispatchEvent(new Event("_PopoverMenu_close"));
+          }
         }
-        if (other.classList.contains("Item") && other.getAttribute("data-open") == "true") {
-          other.removeAttribute("data-open");
-          other.nextElementSibling!.dispatchEvent(new Event("_PopoverMenu_close"));
+        if (popoverMenu) {
+          hover_timeout.current = window.setTimeout(() => {
+            hover_timeout.current = -1;
+            const p: PopoverMenuOpenParams = {
+              reference: button.current!,
+              prefer: rtl_reference.current ? "left" : "right",
+            };
+            button.current!.setAttribute("data-open", "true");
+            popoverMenu.dispatchEvent(new CustomEvent("_PopoverMenu_open", {
+              detail: p,
+            }));
+          }, 250);
         }
-      }
-      if (popoverMenu) {
-        hover_timeout.current = window.setTimeout(() => {
-          hover_timeout.current = -1;
-          const p: PopoverMenuOpenParams = {
-            reference: button.current!,
-            prefer: rtl_reference.current ? "left" : "right",
-          };
-          button.current!.setAttribute("data-open", "true");
-          popoverMenu.dispatchEvent(new CustomEvent("_PopoverMenu_open", {
-            detail: p,
-          }));
-        }, 250);
       }
       return;
     }

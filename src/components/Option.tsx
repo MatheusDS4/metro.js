@@ -49,15 +49,31 @@ export function Option(params: {
     }
   }
 
+  // handle pointer over
+  function pointer_over(): void {
+    const p = button.current!.parentElement?.parentElement?.previousElementSibling;
+
+    // begin combo-box - pointer over
+    if (p?.classList.contains("ComboBox")) {
+      const last_button = parseInt(p!.getAttribute("data-last-button") ?? "0");
+
+      // make sure to not focus option if pressed a button
+      // too recently.
+      if (Date.now() > last_button + 1_000) {
+        button.current!.focus();
+      }
+      return;
+    }
+    // end combo-box - pointer over
+  }
+
   return (
     <button
       className={["Option", BUTTON_NAVIGABLE, ...(params.className ?? "").split(" ").filter(c => c != "")].join(" ")}
       style={params.style}
       data-value={params.value}
       onClick={click}
-      onPointerOver={() => {
-        button.current!.focus();
-      }}
+      onPointerOver={pointer_over}
       ref={button}>
 
       {params.children}

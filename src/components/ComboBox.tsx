@@ -405,6 +405,9 @@ export function ComboBox(params: {
 
       // if focused
       if (document.activeElement === item) {
+        // track timestamp of last button pressed
+        combobox.current!.setAttribute("data-last-button", Date.now().toString());
+
         // navigate up
         if (input.justPressed("navigateUp")) {
           e.preventDefault();
@@ -421,6 +424,9 @@ export function ComboBox(params: {
 
     // if there is no Option focused, handle arrows
     // just a little bit differently.
+
+    // track timestamp of last button pressed
+    combobox.current!.setAttribute("data-last-button", Date.now().toString());
 
     // focus last
     if (input.justPressed("navigateUp")) {
@@ -449,6 +455,9 @@ export function ComboBox(params: {
       return;
     }
 
+    // track timestamp of last button pressed
+    combobox.current!.setAttribute("data-last-button", Date.now().toString());
+
     if (Date.now() < key_sequence_last_timestamp.current + 700) {
       // continue key sequence
       key_sequence_reference.current += e.key.toLowerCase();
@@ -462,12 +471,11 @@ export function ComboBox(params: {
       key_seq = StringUtils.reverse(key_seq);
     }
     for (const item of Array.from(get_item_list_div().children) as HTMLElement[]) {
-      if (item.children.length < 2 || !item.classList.contains("Option")) {
+      if (!item.classList.contains("Option")) {
         continue;
       }
-      const label = item.children[1]! as HTMLElement;
-      const label_text = label.innerText.trim().toLowerCase();
-      if (rtl ? label_text.endsWith(key_seq) : label_text.startsWith(key_seq)) {
+      const item_text = item.innerText.trim().toLowerCase();
+      if (rtl ? item_text.endsWith(key_seq) : item_text.startsWith(key_seq)) {
         item.focus();
         break;
       }
