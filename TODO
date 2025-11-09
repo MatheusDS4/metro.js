@@ -70,7 +70,7 @@ Baseline group.
 # PopoverMenu
 
 - [x] Done
-- [ ] Convert position/max-width/height to rem after transition
+- [70%] Convert position/max-width/height to rem after transition
 - [ ] Observe dynamically added items to optionally resize the PopoverMenu.
 
 Each item must contain three tags: the icon, the label, and the ending (usually a shortcut or submenu indicator). All of them, except the label, are wrapped in a `span`. For an item representing a submenu, there is a following sibling tag being the sub-popover-menu.

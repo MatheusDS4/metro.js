@@ -19,6 +19,7 @@ import * as MathUtils from "../utils/MathUtils";
 import { fitViewport, SimplePlacementType } from "../utils/PlacementUtils";
 import * as StringUtils from "../utils/StringUtils";
 import * as REMConvert from "../utils/REMConvert";
+import { REMObserver } from "../utils/REMObserver";
 import { COMMON_DELAY, MAXIMUM_Z_INDEX } from "../utils/Constants";
 
 /**
@@ -63,6 +64,9 @@ export function PopoverMenu(params: {
   // ?theme
   const theme = React.useContext(ThemeContext);
 
+  // rem
+  const rem = React.useRef(16);
+
   // initialization
   React.useEffect(() => {
     const div_el = div.current!;
@@ -91,6 +95,11 @@ export function PopoverMenu(params: {
     }
     div_el.addEventListener("pointerleave", pointer_leave);
 
+    // rem observer
+    const rem_observer = new REMObserver(value => {
+      rem.current = value;
+    });
+
     // cleanup
     return () => {
       // dispose of external request handlers
@@ -109,6 +118,9 @@ export function PopoverMenu(params: {
         tween.kill();
       }
       tweens.current.length = 0;
+
+      // dispose of REMObserver
+      rem_observer.cleanup();
     };
   }, []);
 
@@ -227,8 +239,8 @@ export function PopoverMenu(params: {
           FloatingUI.size({
             apply({ availableWidth, availableHeight, elements }) {
               Object.assign(elements.floating.style, {
-                maxWidth: availableWidth + "px",
-                maxHeight: availableHeight + "px",
+                maxWidth: (availableWidth / rem.current) + "rem",
+                maxHeight: (availableHeight / rem.current) + "rem",
               });
             },
           }),

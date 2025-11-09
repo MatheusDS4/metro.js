@@ -56,7 +56,7 @@ export function scrollDropdownAlignSelected(
 
   // Get bounding rectangles
   const refRect = reference.getBoundingClientRect();
-  const listRect = dropdownList.getBoundingClientRect();
+  // const listRect = dropdownList.getBoundingClientRect();
   const selectedRect = selected.getBoundingClientRect();
 
   // Compute the offset between the selected option's center and reference center
