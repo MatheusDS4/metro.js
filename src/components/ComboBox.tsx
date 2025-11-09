@@ -406,7 +406,7 @@ export function ComboBox(params: {
       // if focused
       if (document.activeElement === item) {
         // track timestamp of last button pressed
-        combobox.current!.setAttribute("data-last-button", Date.now().toString());
+        combobox.current!.setAttribute("data-last-button", Date.now().toString(35));
 
         // navigate up
         if (input.justPressed("navigateUp")) {
@@ -426,7 +426,7 @@ export function ComboBox(params: {
     // just a little bit differently.
 
     // track timestamp of last button pressed
-    combobox.current!.setAttribute("data-last-button", Date.now().toString());
+    combobox.current!.setAttribute("data-last-button", Date.now().toString(35));
 
     // focus last
     if (input.justPressed("navigateUp")) {
@@ -456,7 +456,7 @@ export function ComboBox(params: {
     }
 
     // track timestamp of last button pressed
-    combobox.current!.setAttribute("data-last-button", Date.now().toString());
+    combobox.current!.setAttribute("data-last-button", Date.now().toString(35));
 
     if (Date.now() < key_sequence_last_timestamp.current + 700) {
       // continue key sequence

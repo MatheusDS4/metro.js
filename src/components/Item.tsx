@@ -106,7 +106,7 @@ export function Item(params: {
     const parentPopoverMenu = get_parent_popover_menu();
     const popoverMenu = get_popover_menu();
     if (parentPopoverMenu) {
-      const last_button = parseInt(parentPopoverMenu!.getAttribute("data-last-button") ?? "0");
+      const last_button = parseInt(parentPopoverMenu!.getAttribute("data-last-button") ?? "0", 35);
 
       // make sure to not focus/open item if pressed a button
       // too recently.

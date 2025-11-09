@@ -55,7 +55,7 @@ export function Option(params: {
 
     // begin combo-box - pointer over
     if (p?.classList.contains("ComboBox")) {
-      const last_button = parseInt(p!.getAttribute("data-last-button") ?? "0");
+      const last_button = parseInt(p!.getAttribute("data-last-button") ?? "0", 35);
 
       // make sure to not focus option if pressed a button
       // too recently.

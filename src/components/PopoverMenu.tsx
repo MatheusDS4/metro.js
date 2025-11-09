@@ -437,7 +437,7 @@ export function PopoverMenu(params: {
       // if focused
       if (document.activeElement === item) {
         // track timestamp of last button pressed
-        div.current!.setAttribute("data-last-button", Date.now().toString());
+        div.current!.setAttribute("data-last-button", Date.now().toString(35));
 
         // navigate up
         if (input.justPressed("navigateUp")) {
@@ -479,7 +479,7 @@ export function PopoverMenu(params: {
     // a little differently.
 
     // track timestamp of last button pressed
-    div.current!.setAttribute("data-last-button", Date.now().toString());
+    div.current!.setAttribute("data-last-button", Date.now().toString(35));
 
     // focus last
     if (input.justPressed("navigateUp")) {
@@ -521,7 +521,7 @@ export function PopoverMenu(params: {
     }
 
     // track timestamp of last button pressed
-    div.current!.setAttribute("data-last-button", Date.now().toString());
+    div.current!.setAttribute("data-last-button", Date.now().toString(35));
 
     // menu list
     let menus = Array.from(get_content_div().querySelectorAll(".PopoverMenu[data-open='true']")) as HTMLDivElement[];

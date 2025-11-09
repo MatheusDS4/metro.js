@@ -101,8 +101,8 @@ Each item must contain three tags: the icon, the label, and the ending (usually 
 # ComboBox
 
 - [x] Done
-  - [ ] Fix little border-ish-jump at the end of the ComboBox open transition.
   - [ ] Convert position/width/height to rem after transition
+  - [ ] Fix little border-ish-jump at the end of the ComboBox open transition.
 - [ ] Future: Virtual list support (e.g. support displaying a loading indicator either at the start or end of the dropdown and add/eliminate options as appropriate maintaining correct V-scroll)
 
 # CheckBox
