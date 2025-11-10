@@ -457,6 +457,9 @@ export class SimpleGroup {
         }
       }
 
+      // skip conflicting tiles without shifting them
+      fixme();
+
     // vert_overflow > 0
     //
     // for vertical overflow (in a horizontal container) = go column-by-column (left-right);
@@ -473,6 +476,9 @@ export class SimpleGroup {
           break;
         }
       }
+
+      // skip conflicting tiles without shifting them
+      fixme();
     }
   }
 
