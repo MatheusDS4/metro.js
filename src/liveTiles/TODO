@@ -1,7 +1,7 @@
 # Core tiles
 
 - [ ] `.direction` getter/setter
-  - [ ] changes the layout and re-detect past DOM nodes.
+  - [ ] changes the layout and re-detect past DOM nodes (e.g. clear things up and add groups and tiles back based on past data).
 - [ ] `.detect()`
   - [ ] Contributes a newly-added DOM tile, or detects moving X/Y, resizing and group transfer (look at parent).
     - [ ] If the tile was previously detected for a different layout limit/direction, then disregard whether X/Y has changed or not.
