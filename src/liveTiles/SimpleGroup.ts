@@ -235,9 +235,16 @@ export class SimpleGroup {
       const tile = new Tile(x!, y!, width, height);
       this.tiles.set(id, tile);
       this.fit(tile);
+
+      // leave no holes
+      let [horizontal_hole, vertical_hole] = this.findHoles(x!, y!, width, height);
+      tile.x -= horizontal_hole;
+      tile.y -= vertical_hole;
+      [horizontal_hole, vertical_hole] = this.findHoles(x!, y!, width, height);
+      tile.x -= horizontal_hole;
+      tile.y -= vertical_hole;
+
       if (this.resolveConflicts(id)) {
-        this.fillMinimumPosition();
-        this.compact();
         return true;
       }
       this.restoreSnapshot(snapshot);
@@ -248,7 +255,10 @@ export class SimpleGroup {
       // if the resulting (x,y) leave holes between other tile clusters,
       // then snap the resulting (x,y) so there is no hole between other tiles
       // (e.g. ensure they are contiguous).
-      const [horizontal_hole, vertical_hole] = this.findHoles(x, y, width, height);
+      let [horizontal_hole, vertical_hole] = this.findHoles(x, y, width, height);
+      x -= horizontal_hole;
+      y -= vertical_hole;
+      [horizontal_hole, vertical_hole] = this.findHoles(x, y, width, height);
       x -= horizontal_hole;
       y -= vertical_hole;
       // contribute tile.
@@ -265,7 +275,26 @@ export class SimpleGroup {
    * @returns `true` if there was no unsolvable conflict, and `false` otherwise.
    */
   public moveTile(id: string, x: number, y: number): boolean {
-    //
+    const tile = this.tiles.get(id);
+    assert(!!tile, "Tile '" + id + "' not found.");
+    const snapshot = this.snapshot();
+    tile!.x = x;
+    tile!.y = y;
+    
+    // leave no holes
+    let [horizontal_hole, vertical_hole] = this.findHoles(x, y, tile.width, tile.height);
+    tile.x -= horizontal_hole;
+    tile.y -= vertical_hole;
+    [horizontal_hole, vertical_hole] = this.findHoles(x, y, tile.width, tile.height);
+    tile.x -= horizontal_hole;
+    tile.y -= vertical_hole;
+
+    if (this.resolveConflicts(id)) {
+      return true;
+    }
+
+    this.restoreSnapshot(snapshot);
+    return false;
   }
 
   /**
@@ -274,15 +303,47 @@ export class SimpleGroup {
    * @returns `true` if there was no unsolvable conflict, and `false` otherwise.
    */
   public resizeTile(id: string, width: number, height: number): boolean {
-    //
+    const tile = this.tiles.get(id);
+    assert(!!tile, "Tile '" + id + "' not found.");
+    const snapshot = this.snapshot();
+    tile!.width = width;
+    tile!.height = height;
+    if (this.resolveConflicts(id)) {
+      return true;
+    }
+    this.restoreSnapshot(snapshot);
+    return false;
   }
 
   /**
-   * Removes a tile, pushing any bottom-located neighbours at fitting horizontal line
-   * towards the removed tile.
+   * Removes a tile.
    */
   public removeTile(id: string): void {
-    fixme();
+    const tile = this.tiles.get(id);
+    assert(!!tile, "Tile '" + id + "' not found.");
+    this.tiles.delete(id);
+
+    // leave no holes
+    for (;;) {
+      let found = false;
+      for (const [, other] of this.tiles) {
+        let [horizontal_hole, vertical_hole] = this.findHoles(other.x, other.y, other.width, other.height);
+        tile.x -= horizontal_hole;
+        tile.y -= vertical_hole;
+        if (horizontal_hole > 0 || vertical_hole > 0) {
+          found = true;
+        }
+        [horizontal_hole, vertical_hole] = this.findHoles(other.x, other.y, other.width, other.height);
+        tile.x -= horizontal_hole;
+        tile.y -= vertical_hole;
+        if (horizontal_hole > 0 || vertical_hole > 0) {
+          found = true;
+        }
+      }
+      if (!found) {
+        break;
+      }
+    }
   }
 
   /**
@@ -356,7 +417,14 @@ export class SimpleGroup {
         break;
       }
     }
-    return [horizontal_holes, vertical_holes];
+
+    // exclude one axis of the holes as
+    // decreasing both may lead to a conflict.
+    if (horizontal_holes > vertical_holes) {
+      return [horizontal_holes, 0];
+    } else {
+      return [0, vertical_holes];
+    }
   }
 
   // in case a tile overflows the container, change its position
