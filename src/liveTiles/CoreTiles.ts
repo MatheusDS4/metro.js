@@ -29,6 +29,7 @@ export type CoreTilesClassNames = {
   groupLabelText: string,
   groupTiles: string,
   tile: string,
+  tileContent: string,
   tileDND: string,
 };
 
@@ -38,3 +39,9 @@ export type CoreTilesClassNames = {
 export type CoreTilesEventMap = {
   //
 };
+
+/**
+ * Core tiles state.
+ */
+export class CoreTilesState {
+}
