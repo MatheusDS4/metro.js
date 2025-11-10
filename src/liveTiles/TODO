@@ -1,4 +1,12 @@
 # Core tiles
 
 - [ ] While dragging a tile, enable overflow clipping at the groupTiles div.
-  - [ ] When drag ends, still leave the mask active for 1 second.
+  - [ ] When drag ends, still leave overflow clipping active for around 750 ms.
+
+## Group label
+
+- [ ] Editing
+
+## Tile drag-n-drop
+
+## Group drag-n-drop
