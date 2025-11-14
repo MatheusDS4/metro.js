@@ -450,8 +450,7 @@ const BigButton = styled.button<ButtonCSSProps>`
   }
 
   &&[data-chosen="true"]:not(:disabled) {
-    background: ${($) => $.$theme.colors.primary};
-    color: ${($) => $.$theme.colors.primaryForeground};
+    opacity: 0.8;
   }
 
   &&:focus:not(:disabled) {
