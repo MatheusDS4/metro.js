@@ -150,7 +150,7 @@ export function HSlider(params: {
 
     // position based on stops
     if (typeof start_ref.current == "undefined") {
-      const stops_list = stops_ref.current!;
+      const stops = stops_ref.current!;
       fixme();
     // position based on start..end (inclusive) range
     } else {
