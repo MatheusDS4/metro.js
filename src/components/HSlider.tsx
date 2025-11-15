@@ -85,7 +85,6 @@ export function HSlider(params: {
   const button = React.useRef<null | HTMLButtonElement>(null);
   const past_div = React.useRef<null | HTMLDivElement>(null);
   const thumb_div = React.useRef<null | HTMLDivElement>(null);
-  const thumb_significant_div = React.useRef<null | HTMLDivElement>(null);
   const val_display_div = React.useRef<null | HTMLDivElement>(null);
   const start_ref = React.useRef<undefined | number>(params.start);
   const end_ref = React.useRef<undefined | number>(params.end);
@@ -115,7 +114,6 @@ export function HSlider(params: {
     dnd.current = new DND(
       button.current!,
       thumb_div.current!,
-      thumb_significant_div.current!,
       val_display_div.current!,
       put_slider_position,
       set_cast_value,
@@ -258,7 +256,7 @@ export function HSlider(params: {
 
     // position/redimension things up
     // - past_div
-    // - thumb_div (count thumb_significant_div)
+    // - thumb_div
 
     past_div.current!.style.left = "";
     past_div.current!.style.width = "";
@@ -268,8 +266,8 @@ export function HSlider(params: {
       thumb_div.current!.style.right = "";
     }
 
-    const sig = (
-      (thumb_significant_div.current!.offsetWidth/2
+    const thumb_dec = ((
+      thumb_div.current!.offsetWidth/2
     ) / ScaleUtils.getScale(button.current!).x) / rem.current;
 
     if (rtl_ref.current) {
@@ -277,14 +275,14 @@ export function HSlider(params: {
       past_div.current!.style.width = percent + "%";
 
       if (thumb) {
-        thumb_div.current!.style.right = "calc(" + percent + "% - " + sig + "rem)";
+        thumb_div.current!.style.right = "calc(" + percent + "% - " + thumb_dec + "rem)";
       }
     } else {
       past_div.current!.style.left = "0";
       past_div.current!.style.width = percent + "%";
 
       if (thumb) {
-        thumb_div.current!.style.left = "calc(" + percent + "% - " + sig + "rem)";
+        thumb_div.current!.style.left = "calc(" + percent + "% - " + thumb_dec + "rem)";
       }
     }
   }
@@ -403,9 +401,7 @@ export function HSlider(params: {
         $bg={non_past_bg}
         $focus_dashes={theme.colors.focusDashes}>
         <HSlider_past_div ref={past_div} $bg={past_bg}/>
-        <HSlider_thumb_div ref={thumb_div} $bg={theme.colors.foreground}>
-          <div ref={thumb_significant_div} className="significant"></div>
-        </HSlider_thumb_div>
+        <HSlider_thumb_div ref={thumb_div} $bg={theme.colors.foreground}/>
       </HSliderButton>
       <ValueDisplayDiv
         ref={val_display_div}
@@ -464,13 +460,8 @@ const HSlider_thumb_div = styled.div<{
     flex-direction: row;
     justify-content: center;
     position: absolute;
-    width: 2.5rem;
-    top: 0;
-    height: 100%;
-  }
-
-  && > .significant {
     width: 1.3rem;
+    top: 0;
     height: 100%;
     background: ${$ => $.$bg};
   }
@@ -510,7 +501,6 @@ class DND {
   public constructor(
     private button: HTMLButtonElement,
     private thumb_div: HTMLDivElement,
-    private thumb_significant_div: HTMLDivElement,
     private val_display_div: HTMLDivElement,
     private put_slider_position: (thumb?: boolean) => void,
     private set_cast_value: (value: number) => void,
