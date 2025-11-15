@@ -47,6 +47,7 @@ export function HSlider(params: {
   const button = React.useRef<null | HTMLButtonElement>(null);
   const past_div = React.useRef<null | HTMLDivElement>(null);
   const thumb_div = React.useRef<null | HTMLDivElement>(null);
+  const thumb_significant_div = React.useRef<null | HTMLDivElement>(null);
   const val_display_div = React.useRef<null | HTMLDivElement>(null);
   const stops_ref = React.useRef<undefined | SliderStop[]>(params.stops);
   const value = React.useRef<number>(params.default);
@@ -108,10 +109,15 @@ export function HSlider(params: {
         }}
         $bg={non_past_bg}>
         <HSlider_past_div ref={past_div} $bg={past_bg}/>
-        <HSlider_thumb_div ref={thumb_div} $bg={theme.colors.foreground}/>
+        <HSlider_thumb_div ref={thumb_div} $bg={theme.colors.foreground}>
+          <div ref={thumb_significant_div} className="significant"></div>
+        </HSlider_thumb_div>
       </HSliderButton>
       <ValueDisplayDiv
         ref={val_display_div}
+        className={[
+          ...(rtl ? ["rtl"] : []),
+        ].join(" ")}
         $bg={theme.colors.inputBackground}
         $border={theme.colors.inputBorder}
         $foreground={theme.colors.foreground}>
@@ -146,7 +152,15 @@ const HSlider_thumb_div = styled.div<{
   $bg: string;
 }> `
   && {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
     position: absolute;
+    width: 2.5rem;
+    height: 100%;
+  }
+
+  && > .significant {
     width: 1.5rem;
     height: 100%;
     background: ${$ => $.$bg};

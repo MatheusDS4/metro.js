@@ -110,8 +110,9 @@ Each item must contain three tags: the icon, the label, and the ending (usually 
 
 - [ ] Done
   - [ ] Value display (position like a tooltip over the thumb (pref. top), but with a more substantial offset)
-  - [ ] Thumb should have a little larger size for nice drag-n-drop, with invisible ends.
+  - [x] Thumb should have a little larger size for nice drag-n-drop, with invisible ends. (Visible = .significant)
   - [ ] Snap thumb depending on the stops (if specified) on drag stop.
+  - [ ] Click anywhere other than the thumb should jump-set value to that point.
   - [ ] Arrow keys
     - [ ] Move by stop, or between start..end
 
