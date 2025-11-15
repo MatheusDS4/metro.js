@@ -1,7 +1,6 @@
 // third-party
 import assert from "assert";
 import React from "react";
-import Draggable from "@hydroperx/draggable";
 import { input } from "@hydroperx/inputaction";
 import { styled } from "styled-components";
 import * as FloatingUI from "@floating-ui/dom";
@@ -103,9 +102,7 @@ export function HSlider(params: {
   const input_pressed_handler = React.useRef<null | (() => void)>(null);
   const integer = React.useRef<boolean>(params.integer ?? true);
   const increment = React.useRef<number>(params.increment ?? 1);
-
-  // drag things
-  const draggable = React.useRef<null | Draggable>(null);
+  const dnd = React.useRef<null | DND>(null);
 
   // colors
   const non_past_bg = theme.colors.sliderBackground;
@@ -113,6 +110,17 @@ export function HSlider(params: {
 
   // initialization
   React.useEffect(() => {
+
+    // drag-n-drop
+    dnd.current = new DND(
+      button.current!,
+      thumb_div.current!,
+      thumb_significant_div.current!,
+      val_display_div.current!,
+      put_slider_position,
+      set_cast_value,
+      get_display_label
+    );
 
     // REMObserver
     const rem_observer = new REMObserver(val => {
@@ -198,20 +206,14 @@ export function HSlider(params: {
 
     disabled_ref.current = !!params.disabled;
     if (disabled_ref.current) {
-      if (draggable.current) {
-        draggable.current!.destroy();
-        draggable.current = null;
-      }
+      dnd.current!.disable();
     } else {
-      initialize_draggable();
+      dnd.current!.enable();
     }
 
     // cleanup
     return () => {
-      if (draggable.current) {
-        draggable.current!.destroy();
-        draggable.current = null;
-      }
+      dnd.current!.destroy();
     };
 
   }, [params.disabled]);
@@ -377,59 +379,6 @@ export function HSlider(params: {
     input_pressed_handler.current = null;
   }
 
-  // initialize draggable
-  function initialize_draggable(): void {
-    if (draggable.current) {
-      draggable.current!.destroy();
-    }
-    draggable.current = new Draggable(thumb_div.current!, {
-      cascadingUnit: "rem",
-      setPosition: false,
-
-      // limit drag-n-drop
-      limit(x: number, y: number, x0: number, y0: number): { x: number, y: number } {
-        const button_offsetParent_scale = ScaleUtils.getScale(button.current!);
-        const min_x = ((-(thumb_div.current!.offsetWidth - thumb_significant_div.current!.offsetWidth))/2) / button_offsetParent_scale.x;
-        const max_x = (button.current!.clientWidth - (thumb_div.current!.offsetWidth - thumb_significant_div.current!.offsetWidth/2)) / button_offsetParent_scale.x;
-        return { x: MathUtils.clamp(x, min_x, max_x), y: y0 };
-      },
-
-      onDrag: thumb_drag,
-      onDragStart: thumb_dragStart,
-      onDragEnd: thumb_dragEnd,
-    });
-  }
-
-  // thumb drag start
-  function thumb_dragStart(element: Element, x: number, y: number, event: Event): void {
-    // show value display div
-    val_display_div.current!.style.visibility = "hidden";
-    FloatingUI.computePosition(thumb_div.current!, val_display_div.current!, {
-      placement: "top",
-      middleware: [
-        FloatingUI.offset(16),
-        FloatingUI.flip(),
-        FloatingUI.shift(),
-      ],
-    }).then(r => {
-      val_display_div.current!.style.left = r.x + "px";
-      val_display_div.current!.style.top = r.y + "px";
-    });
-  }
-
-  // thumb drag
-  function thumb_drag(element: Element, x: number, y: number, event: Event): void {
-    fixme();
-  }
-
-  // thumb dragEnd
-  function thumb_dragEnd(element: Element, x: number, y: number, event: Event): void {
-    // hide value display div
-    val_display_div.current!.style.visibility = "";
-
-    fixme();
-  }
-
   return (
     <>
       <HSliderButton
@@ -549,3 +498,63 @@ const ValueDisplayDiv = styled.div<{
     text-align: right;
   }
 `;
+
+// drag-n-drop
+class DND {
+  private m_pointerDown: null | ((e: PointerEvent) => void) = null;
+  private m_global_pointerMove: null | ((e: PointerEvent) => void) = null;
+  private m_global_pointerUp: null | ((e: PointerEvent) => void) = null;
+  private m_global_pointerCancel: null | ((e: PointerEvent) => void) = null;
+
+  // new DND()
+  public constructor(
+    private button: HTMLButtonElement,
+    private thumb_div: HTMLDivElement,
+    private thumb_significant_div: HTMLDivElement,
+    private val_display_div: HTMLDivElement,
+    private put_slider_position: (thumb?: boolean) => void,
+    private set_cast_value: (value: number) => void,
+    private get_display_label: () => string
+  ) {
+    //
+  }
+
+  // enable drag-n-drop
+  public enable(): void {
+    if (!this.m_pointerDown) {
+      this.m_pointerDown = this.handle_pointer_down.bind(this);
+      this.button.addEventListener("pointerdown", this.m_pointerDown);
+    }
+  }
+
+  // diasble drag-n-drop
+  public disable(): void {
+    if (this.m_pointerDown) {
+      this.button.removeEventListener("pointerdown", this.m_pointerDown);
+      this.m_pointerDown = null;
+    }
+    if (this.m_global_pointerMove) {
+      window.removeEventListener("pointermove", this.m_global_pointerMove);
+      this.m_global_pointerMove = null;
+    }
+    if (this.m_global_pointerUp) {
+      window.removeEventListener("pointerup", this.m_global_pointerUp);
+      this.m_global_pointerUp!(new PointerEvent("pointerup"));
+      this.m_global_pointerUp = null;
+    }
+    if (this.m_global_pointerCancel) {
+      window.removeEventListener("pointercancel", this.m_global_pointerCancel);
+      this.m_global_pointerCancel = null;
+    }
+  }
+
+  // destroy drag-n-drop
+  public destroy(): void {
+    this.disable();
+  }
+
+  // pointer down on the button
+  private handle_pointer_down(e: PointerEvent): void {
+    fixme();
+  }
+}
