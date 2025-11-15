@@ -9,6 +9,7 @@ import { SliderStop } from "./SliderStop";
 import { RTLContext } from "../layout/RTL";
 import { ThemeContext, PrimaryContext } from "../theme/Theme";
 import { MAXIMUM_Z_INDEX } from "../utils/Constants";
+import { REMObserver } from "../utils/REMObserver";
 import * as MathUtils from "../utils/MathUtils";
 import * as ColorUtils from "../utils/ColorUtils";
 
@@ -81,6 +82,7 @@ export function HSlider(params: {
   const primary = React.useContext(PrimaryContext);
   const rtl = React.useContext(RTLContext);
   const rtl_ref = React.useRef(rtl);
+  const rem = React.useRef<number>(16);
 
   // drag things
   const draggable = React.useRef<null | Draggable>(null);
@@ -88,6 +90,24 @@ export function HSlider(params: {
   // colors
   const non_past_bg = theme.colors.sliderBackground;
   const past_bg = primary ? theme.colors.primary : theme.colors.sliderPastBackground;
+
+  // initialization
+  React.useEffect(() => {
+
+    // REMObserver
+    const rem_observer = new REMObserver(val => {
+      rem.current = val;
+      // initial rem may have been wrong, so
+      // fix it in any case.
+      put_slider_position();
+    });
+
+    // cleanup
+    return () => {
+      rem_observer.cleanup();
+    };
+
+  }, []);
 
   // sync default
   React.useEffect(() => {
@@ -173,7 +193,32 @@ export function HSlider(params: {
     }
 
     // position/redimension things up
-    fixme();
+    // - past_div
+    // - thumb_div (count thumb_significant_div)
+
+    past_div.current!.style.left = "";
+    past_div.current!.style.right = "";
+    past_div.current!.style.width = "";
+
+    thumb_div.current!.style.left = "";
+    thumb_div.current!.style.right = "";
+
+    const sig = (
+      thumb_div.current!.offsetWidth -
+      thumb_significant_div.current!.offsetWidth/2
+    ) / rem.current;
+
+    if (rtl_ref.current) {
+      past_div.current!.style.right = "0";
+      past_div.current!.style.width = percent + "%";
+
+      thumb_div.current!.style.right = "calc(" + percent + "% - " + sig + "rem)";
+    } else {
+      past_div.current!.style.left = "0";
+      past_div.current!.style.right = percent + "%";
+
+      thumb_div.current!.style.left = "calc(" + percent + "% - " + sig + "rem)";
+    }
   }
 
   // make sure value is in range and exact
