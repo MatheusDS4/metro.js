@@ -109,6 +109,9 @@ Each item must contain three tags: the icon, the label, and the ending (usually 
 # HSlider
 
 - [ ] Done
+  - [ ] Value display (position like a tooltip over the thumb (pref. top), but with a more substantial offset)
+  - [ ] Thumb should have a little larger size for nice drag-n-drop, with invisible ends.
+  - [ ] Snap thumb depending on the stops (if specified) on drag stop.
   - [ ] Arrow keys
     - [ ] Move by stop, or between start..end
 
