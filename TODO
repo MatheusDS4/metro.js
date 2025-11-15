@@ -117,6 +117,7 @@ Each item must contain three tags: the icon, the label, and the ending (usually 
 # BlackoutModal
 
 - [x] Done
+- [ ] Test it
 
 # DatePicker
 

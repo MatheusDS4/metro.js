@@ -34,7 +34,7 @@ export function enhance({ background, color }: {
         ? darken(b, 0.25)
         : b.toString())
   );
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 256; i++) {
     if (a_isDark) {
       if (Color(r).isDark()) {
         r = lighten(r, 0.0045);
