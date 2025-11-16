@@ -105,7 +105,10 @@ export function ComboBox(params: {
 
   // selected foreground color
   const selected_foreground_color = primary ?
-    ColorUtils.enhance({ color: theme.colors.primary, background: theme.colors.inputBackground }) :
+    ColorUtils.enhance({
+      color: theme.colors.primary,
+      background: (params.big || params.medium) ? theme.colors.background : theme.colors.inputBackground,
+    }) :
     theme.colors.foreground;
 
   // used for aborting the opening/closing effect

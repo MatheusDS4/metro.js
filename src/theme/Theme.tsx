@@ -177,16 +177,78 @@ const dark: Theme = {
   },
 };
 
-// Purple
-const purple: Theme = structuredClone(dark);
-purple.colors.background = purple.colors.primary = "#180053";
+// gray
+const gray = structuredClone(dark);
+gray.colors.background = "#7c7c7c";
+gray.colors.anchor = "#66de0d";
+gray.colors.anchor = "#00e4ff";
 
-// Green
+// red
+const red = structuredClone(dark);
+red.colors.background = "#a52100";
+red.colors.sliderPastBackground =
+red.colors.primary = "#bb0000";
+red.colors.anchor = "#66de0d";
+
+// green
 const green = structuredClone(dark);
 green.colors.background = "#3F8700";
+green.colors.sliderPastBackground =
 green.colors.primary = "#4F970E";
-green.colors.sliderPastBackground = green.colors.primary;
 green.colors.anchor = "#ef7127";
+
+// blue
+const blue = structuredClone(dark);
+blue.colors.background = "#047dc4";
+blue.colors.sliderPastBackground =
+blue.colors.primary = "#0075d4";
+blue.colors.anchor = "#26e4d0";
+
+// purple
+const purple: Theme = structuredClone(dark);
+purple.colors.background = "#180053";
+
+// pink
+const pink = structuredClone(dark);
+pink.colors.background = "#c55ac0";
+pink.colors.sliderPastBackground =
+pink.colors.primary = "#c500a4";
+pink.colors.anchor = "#38e6e4";
+pink.colors.danger = "#a50000";
+
+// orange
+const orange = structuredClone(dark);
+orange.colors.background = "#cf7b0d";
+orange.colors.sliderPastBackground =
+orange.colors.primary = "#d8571c";
+orange.colors.anchor = "#0ddecd";
+orange.colors.danger = "#a00000";
+orange.colors.warning = "#f8d800";
+
+// yellow
+const yellow = structuredClone(dark);
+yellow.colors.background = "#d8ca08";
+yellow.colors.sliderPastBackground =
+yellow.colors.primary = "#ebc000";
+yellow.colors.anchor = "#1a90fe";
+yellow.colors.danger = "#fe1a1a";
+yellow.colors.warning = "#e48101";
+
+// brown
+const brown = structuredClone(dark);
+brown.colors.background = "#7c6a1a";
+brown.colors.sliderPastBackground =
+brown.colors.primary = "#9c8417";
+brown.colors.anchor = "#01e4cc";
+brown.colors.danger = "#fb2020";
+brown.colors.warning = "#e2ca00";
+
+// cyan
+const cyan = structuredClone(dark);
+cyan.colors.background = "#0cbdae";
+cyan.colors.sliderPastBackground =
+cyan.colors.primary = "#00d1c7";
+cyan.colors.anchor = "#d741ed";
 
 /**
  * Theme presets.
@@ -194,8 +256,16 @@ green.colors.anchor = "#ef7127";
 export const ThemePresets = {
   light,
   dark,
-  purple,
+  gray,
+  red,
   green,
+  blue,
+  purple,
+  pink,
+  orange,
+  yellow,
+  brown,
+  cyan,
 };
 
 /**
