@@ -47,16 +47,12 @@ export function CheckBox(params: CheckBoxParams) {
     background: theme.colors.background,
     color: theme.colors.primary,
   });
-  const checked_hover_color = ColorUtils.lighten(checked_color, 0.3);
+  const checked_hover_color = ColorUtils.lighten(checked_color, 0.2);
   const border_color = primary
     ? checked_color
     : ColorUtils.contrast(theme.colors.background, 0.4);
   let unchecked_color = primary ? checked_color : border_color;
-  const unchecked_hover_color = ColorUtils.lighten(unchecked_color, 0.3);
-  if (primary || Color(theme.colors.background).isDark()) {
-    checked_color = ColorUtils.lighten(checked_color, 0.3);
-    unchecked_color = ColorUtils.darken(unchecked_color, 0.1);
-  }
+  const unchecked_hover_color = ColorUtils.lighten(unchecked_color, 0.2);
 
   // carret misc.
   const leftmost_carret_pos = -border_width;

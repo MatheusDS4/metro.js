@@ -164,7 +164,7 @@ const dark: Theme = {
     scrollBarTrack: "rgba(0,0,0,0)",
     scrollBarThumb: "#333",
 
-    primary: "#8c5fff",
+    primary: "#9c75ff",
     primaryForeground: "#fff",
 
     pressed: "#fff",
@@ -217,7 +217,7 @@ purple.colors.anchor = "#26e4d0";
 const pink = structuredClone(dark);
 pink.colors.background = "#b848b2";
 pink.colors.sliderPastBackground =
-pink.colors.primary = "#ff5fe4";
+pink.colors.primary = "#ff8bec";
 pink.colors.anchor = "#38e6e4";
 pink.colors.danger = "#a50000";
 
@@ -320,9 +320,21 @@ export const ThemePresets = {
       const result = structuredClone(__map__.get(preset)!);
       const accent_preset = __map__.get(accent!)!;
 
+      // find primary color
+      let primary_color = Color(accent_preset.colors.primary);
+      if (preset == "light") {
+        for (let i = 0; i < 1024; i++) {
+          if (primary_color.isLight()) {
+            primary_color = primary_color.darken(0.05);
+          } else {
+            break;
+          }
+        }
+      }
+
       // assign primary color
       result.colors.sliderPastBackground =
-      result.colors.primary = accent_preset.colors.primary;
+      result.colors.primary = primary_color.hex().toString();
 
       return result;
     }

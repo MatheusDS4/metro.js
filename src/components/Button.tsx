@@ -93,7 +93,7 @@ export function Button(params: ButtonParams): React.ReactNode {
 
         Button_comp = OutlineButton;
       } else {
-        hover_bg = ColorUtils.lighten(theme.colors.secondary, 0.5);
+        hover_bg = ColorUtils.lighten(theme.colors.secondary, 0.1);
         Button_comp = SecondaryButton;
       }
       break;
@@ -108,13 +108,13 @@ export function Button(params: ButtonParams): React.ReactNode {
 
         Button_comp = OutlinePrimaryButton;
       } else {
-        hover_bg = ColorUtils.lighten(theme.colors.primary, 0.5);
+        hover_bg = ColorUtils.lighten(theme.colors.primary, 0.2);
         Button_comp = PrimaryButton;
       }
       break;
     }
     case "danger": {
-      hover_bg = ColorUtils.lighten(theme.colors.danger, 0.5);
+      hover_bg = ColorUtils.lighten(theme.colors.danger, 0.2);
       Button_comp = DangerButton;
       break;
     }
