@@ -500,14 +500,44 @@ export class SimpleGroup {
     if (conflicting_tiles.length == 0) {
       return true;
     }
-    const target_tile = this.tiles.get(targetId)!;
-    conflicts: for (const conflicting_id of conflicting_tiles) {
-      const conflicting_tile = this.tiles.get(conflicting_id)!;
+    const original_target_tile = this.tiles.get(targetId)!;
+    conflicts: for (let conflicting_id of conflicting_tiles) {
+      let conflicting_tile = this.tiles.get(conflicting_id)!;
 
       // skip *dirty* conflicting tile if the later code shifted
       // it indirectly (during recursion).
-      if (!conflicting_tile.intersects(target_tile)) {
+      if (!conflicting_tile.intersects(original_target_tile)) {
         continue;
+      }
+
+      // swap targets if one tile is more towards the opposite
+      // shift direction.
+      let target_tile = original_target_tile;
+      if (shiftDirection) {
+        let swap = false;
+        if (shiftDirection == "upward") {
+          if (conflicting_tile.y > target_tile.y) {
+            swap = true;
+          }
+        } else if (shiftDirection == "downward") {
+          if (conflicting_tile.y < target_tile.y) {
+            swap = true;
+          }
+        } else if (shiftDirection == "leftward") {
+          if (conflicting_tile.x > target_tile.x) {
+            swap = true;
+          }
+        } else if (conflicting_tile.x < target_tile.x) {
+          swap = true;
+        }
+        if (swap) {
+          let k_conflicing_tile = conflicting_tile;
+          let k_conflicting_id = conflicting_id;
+          conflicting_tile = target_tile;
+          conflicting_id = targetId;
+          target_tile = k_conflicing_tile;
+          targetId = k_conflicting_id;
+        }
       }
 
       // normally shift occurs only in one axis, but
