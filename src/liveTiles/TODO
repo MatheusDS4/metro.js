@@ -1,10 +1,6 @@
 # Core tiles
 
-- [ ] `.direction` getter/setter
-  - [ ] changes the layout
-  - [ ] Re-assign `SimpleGroup`s
-  - [ ] Re-add tiles to `SimpleGroup`s
-  - [ ] Rearrange
+- [x] `.direction` getter/setter
 
 ## Core.detect()
 

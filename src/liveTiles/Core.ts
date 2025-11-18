@@ -199,6 +199,24 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
   }
 
   /**
+   * Shorthand to `addEventListener()`.
+   */
+  public on<K extends keyof CoreEventMap>(type: K, listenerFn: (event: CoreEventMap[K]) => void, options?: AddEventListenerOptions): void;
+  public on(type: string, listenerFn: (event: Event) => void, options?: AddEventListenerOptions): void;
+  public on(type: any, listenerFn: any, options?: AddEventListenerOptions): void {
+    this.addEventListener(type, listenerFn, options);
+  }
+
+  /**
+   * Shorthand to `removeEventListener()`.
+   */
+  public off<K extends keyof CoreEventMap>(type: K, listenerFn: (event: CoreEventMap[K]) => void, options?: EventListenerOptions): void;
+  public off(type: string, listenerFn: (event: Event) => void, options?: EventListenerOptions): void;
+  public off(type: any, listenerFn: any, options?: EventListenerOptions): void {
+    this.removeEventListener(type, listenerFn, options);
+  }
+
+  /**
    * Destroys the `Core` instance, disposing
    * of any observers and handlers.
    */
@@ -223,6 +241,21 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
   }
 
   /**
+   * The direction of the live tile layout.
+   */
+  public get direction(): CoreDirection {
+    return this._dir;
+  }
+  public set direction(val) {
+    const k = this._dir;
+    this._dir = val;
+
+    if (k != val) {
+      this._re_add_tiles();
+    }
+  }
+
+  /**
    * Group width in 1x1 tiles, effective only
    * in a vertical layout (must be `>= 4`).
    */
@@ -234,25 +267,7 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
     this._group_width = val;
 
     if (this._dir == "vertical") {
-      // re-assign SimpleGroups
-      for (const group of this._groups) {
-        // backup tiles
-        const backups =  group.simple.tiles;
-
-        // re-assign SimpleGroup
-        group.simple = new SimpleGroup({
-          width: this._group_width,
-        });
-
-        // re-add tiles
-        for (const [tileId] of group.tiles) {
-          const backup = backups.get(tileId)!;
-          group.simple.addTile(tileId, backup.x, backup.y, backup.width, backup.height);
-        }
-      }
-
-      // rearrange
-      this.rearrange();
+      this._re_add_tiles();
     }
   }
 
@@ -268,25 +283,7 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
     this._group_height = val;
 
     if (this._dir == "horizontal") {
-      // re-assign SimpleGroups
-      for (const group of this._groups) {
-        // backup tiles
-        const backups =  group.simple.tiles;
-
-        // re-assign SimpleGroup
-        group.simple = new SimpleGroup({
-          height: this._group_height,
-        });
-
-        // re-add tiles
-        for (const [tileId] of group.tiles) {
-          const backup = backups.get(tileId)!;
-          group.simple.addTile(tileId, backup.x, backup.y, backup.width, backup.height);
-        }
-      }
-
-      // rearrange
-      this.rearrange();
+      this._re_add_tiles();
     }
   }
 
@@ -446,7 +443,7 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
    * Calling this method may be necessary if the
    * container is initially scaled to zero.
    */
-  public rearrangeOverMinimumScale(): AbortController {
+  public rearrangeMin(): AbortController {
     const initialScale = ScaleUtils.getScale(this._container);
     const abortController = new AbortController();
     const check = () => {
@@ -464,6 +461,53 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
     };
     requestAnimationFrame(check);
     return abortController;
+  }
+
+  // reset SimpleGroups and perform a rearrangement.
+  private _re_add_tiles(): void {
+    // gather moved tiles
+    const movedTiles: { id: string, x: number, y: number }[] = [];
+
+    // re-assign SimpleGroups
+    for (const group of this._groups) {
+      // backup tiles
+      const backups =  group.simple.tiles;
+
+      // re-assign SimpleGroup
+      group.simple = new SimpleGroup({
+        width: this._dir == "vertical" ? this._group_width : undefined,
+        height: this._dir == "horizontal" ? this._group_height : undefined,
+      });
+
+      // re-add tiles
+      for (const [tileId] of group.tiles) {
+        const backup = backups.get(tileId)!;
+        group.simple.addTile(tileId, backup.x, backup.y, backup.width, backup.height);
+        const newTile = group.simple.tiles.get(tileId)!;
+        // collect moved tile
+        if (!(backup.x == newTile.x && backup.y == newTile.y)) {
+          movedTiles.push({
+            id: tileId,
+            x: newTile.x,
+            y: newTile.y,
+          });
+        }
+      }
+    }
+
+    // rearrange
+    this.rearrange();
+
+    // trigger bulk change event with any tile moves
+    const bulkChange: BulkChange = {
+      moves: movedTiles,
+      groupTransfers: [],
+      groupRemovals: [],
+      groupCreation: null,
+    };
+    this.dispatchEvent(new CustomEvent("bulkChange", {
+      detail: bulkChange,
+    }));
   }
 }
 
@@ -567,6 +611,12 @@ export type BulkChange = {
    * explicit tile removal (in case group turns empty))
    */
   groupRemovals: { id: string }[],
+  /**
+   * Requests to create a new group at the end,
+   * in response to a drag-n-drop in the last empty space.
+   * Contains a tile ID to contain,
+   */
+  groupCreation: null | { tile: string },
 };
 
 /**
