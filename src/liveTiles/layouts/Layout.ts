@@ -16,13 +16,13 @@ export abstract class Layout {
   /**
    * Snaps location to grid.
    */
-  public abstract snapToGrid(tileDND: HTMLElement): null | GridSnapResult;
+  public abstract snap(tileDND: HTMLElement): null | SnapResult;
 }
 
 /**
  * Grid snap result.
  */
-export type GridSnapResult = {
+export type SnapResult = {
   /**
    * Group ID.
    *

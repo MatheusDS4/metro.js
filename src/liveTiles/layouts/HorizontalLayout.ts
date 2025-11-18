@@ -1,5 +1,5 @@
 // local
-import { Layout, GridSnapResult } from "./Layout";
+import { Layout, SnapResult } from "./Layout";
 import type { Core } from "../Core";
 
 // horizontal layout
@@ -19,7 +19,7 @@ export class HorizontalLayout extends Layout {
   /**
    * Snaps location to grid.
    */
-  public override snapToGrid(tileDND: HTMLElement): null | GridSnapResult {
+  public override snap(tileDND: HTMLElement): null | SnapResult {
     fixme();
   }
 }

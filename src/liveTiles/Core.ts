@@ -676,6 +676,9 @@ export class CoreGroup {
     );
   }
 
+  /**
+   * Returns a tile's position.
+   */
   public tilePosition(id: string): { x: number, y: number } {
     const tile = this.simple.tiles.get(id);
     assert(!!tile, "Tile '"+id+"' not found.");
