@@ -4,6 +4,9 @@ import { TypedEventTarget } from "@hydroperx/event";
 import Draggable from "@hydroperx/draggable";
 
 // local
+import { Layout } from "./layouts/Layout";
+import { HorizontalLayout } from "./layouts/HorizontalLayout";
+import { VerticalLayout } from "./layouts/VerticalLayout";
 import { SimpleGroup, SimpleTile } from "./SimpleGroup";
 import { TileSize, getWidth, getHeight, TileSizeMap, TileSizeMapPair } from "./TileSize";
 import * as REMConvert from "../utils/REMConvert";
@@ -16,6 +19,10 @@ import { DND } from "./DND";
  * Live tiles core implementation.
  */
 export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
+  /**
+   * @hidden
+   */
+  public _layout: Layout;
   /**
    * @hidden
    */
@@ -174,6 +181,7 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
     labelHeight: number,
   }) {
     super();
+    this._layout = params.direction == "horizontal" ? new HorizontalLayout(this) : new VerticalLayout(this);
     this._container = params.container;
     this._container.style.position = "relative";
     this._dir = params.direction;
@@ -250,7 +258,8 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
     const k = this._dir;
     this._dir = val;
 
-    if (k != val) {
+    if (k != this._dir) {
+      this._layout = this._dir == "horizontal" ? new HorizontalLayout(this) : new VerticalLayout(this);
       this._re_add_tiles();
     }
   }
@@ -463,6 +472,11 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
     return abortController;
   }
 
+  // rearrange immediately.
+  private _rearrange_now(): void {
+    this._layout.rearrange();
+  }
+
   // reset SimpleGroups and perform a rearrangement.
   private _re_add_tiles(): void {
     // gather moved tiles
@@ -551,6 +565,10 @@ export type CoreClassNames = {
  * Events emitted by `Core` instances.
  */
 export type CoreEventMap = {
+  /**
+   * Event that dispatches when a tile is clicked.
+   */
+  click: CustomEvent<{ tile: string }>,
   /**
    * Bulk change event.
    */
@@ -647,17 +665,21 @@ export class CoreGroup {
    */
   public tileSize(id: string): TileSize {
     const tile = this.simple.tiles.get(id);
-    if (tile) {
-      const w = tile!.width;
-      const h = tile!.height;
-      return (
-        w == 4 ? (
-          h == 2 ? "wide" : "large"
-        ) :
-        w == 2 ? "medium" : "small"
-      );
-    }
-    return "small";
+    assert(!!tile, "Tile '"+id+"' not found.");
+    const w = tile!.width;
+    const h = tile!.height;
+    return (
+      w == 4 ? (
+        h == 2 ? "wide" : "large"
+      ) :
+      w == 2 ? "medium" : "small"
+    );
+  }
+
+  public tilePosition(id: string): { x: number, y: number } {
+    const tile = this.simple.tiles.get(id);
+    assert(!!tile, "Tile '"+id+"' not found.");
+    return { x: tile!.x, y: tile!.y };
   }
 }
 
