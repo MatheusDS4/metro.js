@@ -109,9 +109,34 @@ export class Detection {
       tile!.dom = node;
 
       // transfer group?
-      if (maybe_old_group ? maybe_old_group! !== new_group! : false) {
-        // change everything (x, y, size)
-        fixme();
+      if (!!maybe_old_group && maybe_old_group! !== new_group!) {
+        // remove tile from old group
+        maybe_old_group!.simple.removeTile(id);
+        maybe_old_group!.tiles.delete(id);
+
+        // add to new group (handle -1 x, y too)
+        new_group.tiles.set(id, tile!);
+        if (new_group.simple.addTile(
+          id,
+          (new_x == -1 || new_y == -1) ? null : new_x,
+          (new_x == -1 || new_y == -1) ? null : new_y,
+          getWidth(new_size),
+          getHeight(new_size)
+        )) {
+          const simple = new_group.simple.tiles.get(id)!;
+          // if final (x, y) diverges from the user-specified,
+          // then signal them.
+          if (simple.x != new_x || simple.y != new_y) {
+            bulkChange.movedTiles.push({ id, x: simple.x, y: simple.y });
+          }
+        } else {
+          // use best last position if failed to shift conflicting
+          // tiles, and signal change.
+          new_group.simple.addTile(id, null, null, getWidth(new_size), getHeight(new_size));
+          const simple = new_group.simple.tiles.get(id)!;
+          bulkChange.movedTiles.push({ id, x: simple.x, y: simple.y });
+        }
+
         return true;
       }
 
@@ -129,12 +154,26 @@ export class Detection {
       let changed = false;
 
       //
-      const simple = new_group!.simple.tiles.get(id)!;
+      let simple = new_group!.simple.tiles.get(id)!;
 
       // move X/Y
       if (new_x != simple.x || new_y != simple.y) {
-        assert(new_x != -1 && new_y != -1, "Move tile coordinates must be specified and not equals -1.");
-        if (!new_group!.simple.moveTile(id, new_x, new_y)) {
+        // use best last position
+        if (new_x == -1 || new_y == -1) {
+          new_group!.simple.removeTile(id);
+          new_group!.simple.addTile(id, null, null, getWidth(new_size), getHeight(new_size));
+          const final = new_group.simple.tiles.get(id)!;
+          // signal new (x, y)
+          bulkChange.movedTiles.push({ id, x: final.x, y: final.y });
+        // move to specified (x, y) if not (-1, -1)
+        } else if (new_group!.simple.moveTile(id, new_x, new_y)) {
+          const final = new_group.simple.tiles.get(id)!;
+          // if final (x, y) diverges from the user-specified,
+          // then signal them.
+          if (final.x != new_x || final.y != new_y) {
+            bulkChange.movedTiles.push({ id, x: final.x, y: final.y });
+          }
+        } else {
           // fail? then move back to previous position.
           bulkChange.movedTiles.push({ id, x: simple.x, y: simple.y });
         }
@@ -142,6 +181,9 @@ export class Detection {
         //
         changed = true;
       }
+
+      //
+      simple = new_group!.simple.tiles.get(id)!;
 
       // resize?
       if (getWidth(new_size) != simple.width || getHeight(new_size) != simple.height) {

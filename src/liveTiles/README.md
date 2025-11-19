@@ -12,6 +12,10 @@
         - Tile content (a `<div>` with custom content that may be scaled up/down). In general, do any styling (like border, background and tilting) on this `<div>` instead of the tile itself.
   - Tile DND (a `<div>` that contains a tile representing the tile currently dragging)
 
+## Tile rules
+
+- When any of the (x, y) coordinates is given `-1` or unspecified, tiles go to the best last position (as if both (x, y) were omitted).
+
 ## Group attributes
 
 - `data-id` - Read-only group ID.
