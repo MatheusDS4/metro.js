@@ -91,6 +91,9 @@ export class Detection {
       const maybe_old_group = this.$._groups.find(g => g.tiles.has(id));
       let tile = maybe_old_group?.tiles.get(id);
 
+      // first iteration? (e.g. about to add tile to group?)
+      const tile_first_iteration = !tile;
+
       // attach pointer handlers (if not already attached)
       //
       // `CoreTile.attachedHandlers` (compare element)
@@ -102,17 +105,23 @@ export class Detection {
       if (!tile) {
         fixme();
 
-        // initialize SimpleTile on CoreGroup
+        // DO NOT initialize SimpleTile on CoreGroup right now
         fixme();
       }
       tile!.attachedHandlers = node;
       tile!.dom = node;
 
       // transfer group?
-      if (!!maybe_old_group && maybe_old_group! !== new_group!) {
+      const is_group_transfer = !!maybe_old_group && maybe_old_group! !== new_group!;
+
+      // on tile's first iteration (add), or
+      // on group transfer, we've identical code.
+      if (tile_first_iteration || is_group_transfer) {
         // remove tile from old group
-        maybe_old_group!.simple.removeTile(id);
-        maybe_old_group!.tiles.delete(id);
+        if (is_group_transfer) {
+          maybe_old_group!.simple.removeTile(id);
+          maybe_old_group!.tiles.delete(id);
+        }
 
         // add to new group (handle -1 x, y too)
         new_group.tiles.set(id, tile!);
@@ -137,16 +146,6 @@ export class Detection {
           bulkChange.movedTiles.push({ id, x: simple.x, y: simple.y });
         }
 
-        return true;
-      }
-
-      // add to group?
-      //
-      // - if x & y = -1, then contribute a movedTile
-      //   in the bulkChange for the best last position.
-      if (maybe_old_group) {
-        // put everything (x, y, size)
-        fixme();
         return true;
       }
 
