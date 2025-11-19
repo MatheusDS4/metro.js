@@ -76,7 +76,7 @@ export class Detection {
       let changed = false;
 
       // initialize group
-      let new_group = this.$._groups.find(g => g.id == group_id);
+      let new_group = this.$._groups.values().find(g => g.id == group_id);
       if (!new_group) {
         const group_dom = node.parentElement!.parentElement! as HTMLDivElement;
         const simple = new SimpleGroup({
@@ -96,25 +96,30 @@ export class Detection {
         // add group to Core (`this.$._groups`)
         let i = parseInt(group_dom.getAttribute("data-index") || "-1");
         if (i == -1) {
-          this.$._groups.push(new_group!);
+          // put group at end
+          const final_index = Math.max.apply(null, Array.from(this.$._groups.keys()).concat([-1])) + 1;
+          this.$._groups.set(final_index, new_group!);
           // signal group move (length - 1)
-          this.$.dispatchEvent(new CustomEvent("moveGroup", {
-            detail: { id: new_group!.id, index: this.$._groups.length - 1 }
+          this.$.dispatchEvent(new CustomEvent("reorderGroups", {
+            detail: new Map(this.$._groups.entries().map(([id, g]) => [id, g.id]))
           }));
         } else {
-          const final_index = MathUtils.clamp(i, 0, this.$._groups.length);
-          this.$._groups.splice(final_index, 0, new_group!);
+          let final_index = i;
+          while (this.$._groups.has(final_index)) {
+            final_index++;
+          }
+          this.$._groups.set(final_index, new_group!);
           // signal group move
           if (i != final_index) {
-            this.$.dispatchEvent(new CustomEvent("moveGroup", {
-              detail: { id: new_group!.id, index: final_index }
+            this.$.dispatchEvent(new CustomEvent("reorderGroups", {
+              detail: new Map(this.$._groups.entries().map(([id, g]) => [id, g.id]))
             }));
           }
         }
       }
 
       // find maybe old group
-      const maybe_old_group = this.$._groups.find(g => g.tiles.has(id));
+      const maybe_old_group = this.$._groups.values().find(g => g.tiles.has(id));
       let tile = maybe_old_group?.tiles.get(id);
 
       // first iteration? (e.g. about to add tile to group?)
@@ -230,7 +235,7 @@ export class Detection {
     }
 
     // if not, remove tile.
-    const group = this.$._groups.find(g => g.tiles.has(id));
+    const group = this.$._groups.values().find(g => g.tiles.has(id));
     if (!group) {
       return false;
     }
@@ -253,11 +258,11 @@ export class Detection {
 
     // remove group if it has no parent
     if (!group_dom.parentElement) {
-      const i = this.$._groups.findIndex(g => g.id == group_id);
+      const i = this.$._groups.entries().find(([, g]) => g.id == group_id)?.[0] ?? -1;
       if (i == -1) {
         return false;
       }
-      this.$._groups.splice(i, 1);
+      this.$._groups.delete(i);
       if (this.$._dnd.groupDraggable?.[0] == group_id) {
         this.$._dnd.groupDraggable![1].destroy();
         this.$._dnd.groupDraggable = null;
@@ -269,7 +274,7 @@ export class Detection {
     let changed = false;
 
     // initialize group
-    let group = this.$._groups.find(g => g.id == group_id);
+    let group = this.$._groups.values().find(g => g.id == group_id);
     if (!group) {
       const simple = new SimpleGroup({
         width: this.$._dir == "vertical" ? this.$._group_width : undefined,
@@ -287,39 +292,45 @@ export class Detection {
     }
 
     //
-    const old_index = this.$._groups.findIndex(g => g.id == group_id);
+    const old_index = this.$._groups.entries().find(([,g]) => g.id == group_id)?.[0] ?? -1;
     if (old_index == -1 || old_index != new_index) {
       let final_index = 0;
 
       // add group to Core (`this.$._groups`)
       if (new_index == -1) {
-        final_index = this.$._groups.length;
-        this.$._groups.push(group!);
+        // put group at end
+        final_index = Math.max.apply(null, Array.from(this.$._groups.keys()).concat([-1])) + 1;
       } else {
-        final_index = MathUtils.clamp(new_index, 0, this.$._groups.length);
-        this.$._groups.splice(final_index, 0, group!);
+        final_index = new_index;
+        while (this.$._groups.has(final_index)) {
+          final_index++;
+        }
       }
+      this.$._groups.set(final_index, group!);
 
       // remove old duplicate
       if (old_index != -1) {
-        this.$._groups.splice(old_index + (final_index <= old_index ? 1 : 0), 1);
+        this.$._groups.delete(old_index);
       }
 
       // signal group move
-      final_index = this.$._groups.indexOf(group!);
       if (new_index != final_index) {
-        this.$.dispatchEvent(new CustomEvent("moveGroup", {
-          detail: { id: group!.id, index: final_index }
+        this.$.dispatchEvent(new CustomEvent("reorderGroups", {
+          detail: new Map(this.$._groups.entries().map(([id, g]) => [id, g.id]))
         }));
       }
+    }
+
+    // detect label change
+    const old_label = group!.label;
+    if (new_label != old_label) {
+      group!.label = new_label;
+      changed = true;
     }
 
     // attach pointer handlers (if not already attached)
     //
     // `CoreGroup.attachedHandlers` (compare element)
-    fixme();
-
-    //
     fixme();
 
     // return

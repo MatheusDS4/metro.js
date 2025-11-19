@@ -12,6 +12,10 @@
         - Tile content (a `<div>` with custom content that may be scaled up/down). In general, do any styling (like border, background and tilting) on this `<div>` instead of the tile itself.
   - Tile DND (a `<div>` that contains a tile representing the tile currently dragging)
 
+## Group list
+
+- For representing a group list, you need a `Map<number, T>` array (`index => T`). You can manually optimize this map so that indices are zero-based and contiguous. A common trick is to defer group re-order, accumulating them, so that same-time group moves will result in a consistent order when optimizing the map.
+
 ## Tile rules
 
 - When any of the (x, y) coordinates is given `-1` or unspecified, tiles go to the best last position (as if both (x, y) were omitted).

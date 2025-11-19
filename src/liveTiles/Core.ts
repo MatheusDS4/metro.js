@@ -29,7 +29,7 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
   /**
    * @hidden
    */
-  public _groups: CoreGroup[] = [];
+  public _groups: Map<number, CoreGroup> = new Map();
   /**
    * @hidden
    */
@@ -589,16 +589,9 @@ export type CoreEventMap = {
    */
   bulkChange: CustomEvent<BulkChange>,
   /**
-   * Move group event.
-   * 
-   * Should act like a `.splice(index, 0, group)`,
-   * removing the obsolete element later as in:
-   * 
-   * ```
-   * groups.splice(oldIndex + (newIndex <= oldIndex ? 1 : 0), 1);
-   * ```
+   * Reorder groups event. (`index => groupId`)
    */
-  moveGroup: CustomEvent<{ id: string, index: number }>,
+  reorderGroups: CustomEvent<Map<number, string>>,
   /**
    * Rename group event.
    */
