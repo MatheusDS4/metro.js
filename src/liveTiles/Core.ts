@@ -652,6 +652,7 @@ export class CoreGroup {
   public label: string;
   public tiles: Map<string, CoreTile> = new Map();
   public simple: SimpleGroup;
+  public attachedHandlers: null | HTMLDivElement = null;
 
   //
   public constructor(params: {
@@ -680,6 +681,9 @@ export class CoreTile {
 
   // tween
   public tween: null | gsap.core.Tween = null;
+
+  // attached handlers?
+  public attachedHandlers: null | HTMLButtonElement = null;
 
   // last rearrange data
   public lastRearrange_positioned: boolean = false;

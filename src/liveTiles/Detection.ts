@@ -1,5 +1,5 @@
 // local
-import type { Core, BulkChange, concatBulkChanges } from "./Core";
+import type { Core, BulkChange } from "./Core";
 import { TileSize } from "./TileSize";
 
 // node detection for groups and tiles
@@ -56,7 +56,7 @@ export class Detection {
   //
   // return false if there were no changes detected.
   private _detect_tile(node: HTMLButtonElement, bulkChange: BulkChange): boolean {
-    const id = node.getAttribute("data-id")!;
+    const id = node.getAttribute("data-id") ?? "";
     const new_x = parseInt(node.getAttribute("data-x") || "-1");
     const new_y = parseInt(node.getAttribute("data-y") || "-1");
     const new_size = node.getAttribute("data-size") as TileSize;
@@ -64,6 +64,8 @@ export class Detection {
     // in a group?
     if (node.parentElement?.classList.contains(this.$._class_names.groupTiles)) {
       // attach pointer handlers (if not already attached)
+      //
+      // `CoreTile.attachedHandlers` (compare element)
       fixme();
 
       //
@@ -85,6 +87,11 @@ export class Detection {
       fixme();
 
       return changed;
+    }
+
+    // tileDND? ignore.
+    if (node.parentElement?.classList.contains(this.$._class_names.tileDND)) {
+      return false;
     }
 
     // if not, remove tile.
@@ -122,6 +129,11 @@ export class Detection {
       }
       return true;
     }
+
+    // attach pointer handlers (if not already attached)
+    //
+    // `CoreGroup.attachedHandlers` (compare element)
+    fixme();
 
     // note: if group to add has -1 index then change it to the last
     // position and dispatch the `moveGroup` event.
