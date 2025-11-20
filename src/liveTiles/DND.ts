@@ -109,7 +109,7 @@ export class DND {
   }
 
   //
-  private _tile_drag_start(element: HTMLElement, x: number, y:  number, event: Event): void {
+  private _tile_drag_start(element: Element, x: number, y:  number, event: Event): void {
     // visibility changes
     this.tileDNDDOM!.style.visibility = "visible";
     this.tileButton!.style.visibility = "hidden";
@@ -127,12 +127,12 @@ export class DND {
   }
 
   //
-  private _tile_drag_move(element: HTMLElement, x: number, y:  number, event: Event): void {
+  private _tile_drag_move(element: Element, x: number, y:  number, event: Event): void {
     fixme();
   }
 
   //
-  private _tile_drag_end(element: HTMLElement, x: number, y:  number, event: Event): void {
+  private _tile_drag_end(element: Element, x: number, y:  number, event: Event): void {
     fixme();
   }
 }
