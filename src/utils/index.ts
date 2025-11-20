@@ -10,3 +10,6 @@ export { REMObserver } from "./REMObserver";
 
 // escapable utilities
 export { escapable } from "./EscapableUtils";
+
+// random utilities
+export { randomHex } from "./RandomUtils";

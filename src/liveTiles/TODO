@@ -26,12 +26,12 @@ Trick to use: Draggable needs to drag the tileDND element, not the tile itself. 
   - [x] Set `dragging=true`
   - [x] Make tileDND's Z-index maximum.
 - [x] _tile_drag_move
-- [ ] _tile_drag_end
-  - [ ] If tile was removed, exit.
-  - [ ] Set `_original_state=new Map();`
-  - [ ] Set `dragging=false`
-  - [ ] Set `tileId=""`
-  - [ ] Make tileDND hidden back and tileButton visible back
+- [x] _tile_drag_end
+  - [x] If tile was removed, exit.
+  - [x] Set `dragging=false`
+  - [x] Set `tileId=""`
+  - [x] Make tileDND hidden back and tileButton visible back
+  - [x] Set `_original_state=new Map();`
 
 More:
 

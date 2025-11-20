@@ -89,8 +89,12 @@ export class DND {
     this.tileDNDDraggable = null;
     this.groupDraggable?.[1].destroy();
     this.groupDraggable = null;
+    /*
+    this.restore();
+    */
+    // clear state backup
+    this._original_state.clear();
 
-    this._restore();
     this.dragging = false;
     if (this.tileDNDDOM) {
       this.tileDNDDOM.style.visibility = "hidden";
@@ -98,6 +102,7 @@ export class DND {
     this.tileDNDDOM = null;
   }
 
+  /*
   // restore initial layout state before drag-n-drop.
   //
   // for tiles: this should restore state, remove dead dragging tile if the case,
@@ -114,6 +119,7 @@ export class DND {
   private _restore(): void {
     fixme();
   }
+  */
 
   //
   private _tile_drag_start(element: Element, x: number, y:  number, event: Event): void {
@@ -141,8 +147,18 @@ export class DND {
 
   //
   private _tile_drag_move(element: Element, x: number, y:  number, event: Event): void {
+    // update tile <button> reference as its DOM may have been re-created
+    // (typically in response to React.js's rendering)
+    this.tileButton = this.$._groups.values()
+      .find(g => g.tiles.has(this.tileId))?.tiles.get(this.tileId)?.dom ?? null;
+
+    // visibility changes
+    if (this.tileButton) {
+      this.tileButton!.style.visibility = "hidden";
+    }
+
     // exit if the tile has been removed while dragging.
-    if (!this.tileButton!.parentElement) {
+    if (!(this.tileButton && this.tileButton!.parentElement)) {
       return;
     }
 
@@ -163,9 +179,11 @@ export class DND {
           Math.abs(old_snap!.y - this._snap!.y) >= 1;
 
         // revert shifting changes
+        /*
         if (threshold_met) {
           this._restore();
         }
+        */
       }
 
       // if threshold is met
@@ -196,10 +214,12 @@ export class DND {
           }));
         }
       }
+    }/*
     // otherwise restore state
-    } else {
+    else {
       this._restore();
     }
+    */
 
     // trigger Core#dragMove
     this.$.dispatchEvent(new CustomEvent("dragMove", {
@@ -209,6 +229,37 @@ export class DND {
 
   //
   private _tile_drag_end(element: Element, x: number, y:  number, event: Event): void {
-    fixme();
+    // update tile <button> reference as its DOM may have been re-created
+    // (typically in response to React.js's rendering)
+    this.tileButton = this.$._groups.values()
+      .find(g => g.tiles.has(this.tileId))?.tiles.get(this.tileId)?.dom ?? null;
+
+    // exit if the tile has been removed while dragging.
+    if (!(this.tileButton && this.tileButton!.parentElement)) {
+      return;
+    }
+
+    // last grid-snapping may have requested a new group,
+    // which is appropriate to create during drag end.
+    if (this._snap && !this._snap!.group) {
+      // group transfer
+      const bulkChange: BulkChange = {
+        movedTiles: [],
+        groupTransfers: [],
+        groupRemovals: [],
+        groupCreation: { tile: this.tileId },
+      };
+      this.$.dispatchEvent(new CustomEvent("bulkChange", {
+        detail: bulkChange,
+      }));
+    }
+
+    this.dragging = false;
+    this.tileId = "";
+    this._original_state.clear();
+
+    // visibility changes
+    this.tileButton!.style.visibility = "";
+    this.tileDNDDOM!.style.visibility = "hidden";
   }
 }

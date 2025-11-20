@@ -793,7 +793,8 @@ export type BulkChange = {
   /**
    * Requests to create a new group at the end,
    * in response to a drag-n-drop in the last empty space.
-   * Contains a tile ID to contain,
+   * Specifies a tile to transfer to the new group
+   * from the old group.
    */
   groupCreation: null | { tile: string },
 };
