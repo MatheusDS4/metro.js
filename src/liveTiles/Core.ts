@@ -694,7 +694,7 @@ export type CoreEventMap = {
   /**
    * Event that dispatches when a tile is clicked.
    */
-  click: CustomEvent<{ tile: string, clientX: number, clientY: number }>,
+  click: CustomEvent<{ tile: string }>,
   /**
    * Event that dispatches when right click occurs in a tile.
    * Default behavior is prevented beforehand.

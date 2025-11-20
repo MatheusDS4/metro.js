@@ -58,7 +58,7 @@ export class TilePointerHandlers {
     this.dragged = false;
     this.toggle_timeout = window.setTimeout(() => {
       // holding long on a tile will check it
-      if (this.$._dnd.dragging) return;
+      if (this.dragged) return;
       this.toggle_check();
       this.just_held_long = true;
       this.toggle_timestamp = Date.now();
@@ -86,6 +86,7 @@ export class TilePointerHandlers {
     if (!this.draggable_ready) {
       this.$._dnd.initTileDNDDraggable();
       this.$._dnd.tileId = this.id;
+      this.$._dnd.tileButton = this.node;
       this.draggable_ready = true;
       // tileDND#mousedown
       this.$._dnd.tileDNDDOM?.dispatchEvent(new MouseEvent("mousedown", {
@@ -119,49 +120,89 @@ export class TilePointerHandlers {
 
   //
   private mouse_up(e: MouseEvent): void {
-    if (!this.mouse_started) {
-      return;
+    if (this.toggle_timeout != -1) {
+      window.clearTimeout(this.toggle_timeout);
+      this.toggle_timeout = -1;
     }
-
-    fixme();
 
     this.discard_window_handlers()
   }
 
   //
   private mouse_out(e: MouseEvent): void {
-    if (!this.mouse_started) {
-      return;
+    if (this.toggle_timeout != -1) {
+      window.clearTimeout(this.toggle_timeout);
+      this.toggle_timeout = -1;
     }
-
-    fixme();
+    this.just_held_long = false;
   }
 
   //
   private click(e: MouseEvent): void {
-    if (!this.mouse_started) {
+    if (!this.mouse_started || this.dragged) {
+      // cancel check-toggle timeout
+      if (this.toggle_timeout != -1) {
+        window.clearTimeout(this.toggle_timeout);
+        this.toggle_timeout = -1;
+      }
       return;
     }
-
-    fixme();
+    if (this.just_held_long) {
+      this.just_held_long = false;
+      return;
+    }
+    // cancel check-toggle timeout
+    if (this.toggle_timeout != -1) {
+      window.clearTimeout(this.toggle_timeout);
+      this.toggle_timeout = -1;
+    }
 
     this.discard_window_handlers()
+    this.short_click(e);
   }
 
   //
-  private context_menu(e: PointerEvent): void {
-    e.preventDefault();
-    this.$.dispatchEvent(new CustomEvent("contextMenu", {
-      detail: {
-        tile: this.id,
-        clientX: e.clientX,
-        clientY: e.clientY,
-      },
-    }));
+  private short_click(e: Event): void {
+    if (this.toggle_timeout !== -1) {
+      window.clearTimeout(this.toggle_timeout);
+      this.toggle_timeout = -1;
+    }
+
+    // removed? do nothing.
+    if (!this.node.parentElement) {
+      return;
+    }
+
+    // a click in a tile
+    if (this.toggle_timestamp === -1 || this.toggle_timestamp < Date.now() - 100) {
+      // during selection mode a click is a check toggle
+
+      const tile_buttons = this.$._groups.values()
+        .map(g =>
+          Array.from(g.tiles.values().map(t => t.dom).filter(btn => !!btn))
+        ).reduce((a, b) => a.concat(b), []);
+
+      const selection_mode = tile_buttons.some(btn => btn.getAttribute("data-checked") === "true");
+      if (selection_mode) {
+        this.toggle_check();
+      } else {
+        // click
+        this.$.dispatchEvent(new CustomEvent("click", {
+          detail: { tile: this.id }
+        }));
+      }
+
+      this.toggle_timestamp = -1;
+    }
   }
 
   //
   private toggle_check(): void {
+    // removed? do nothing.
+    if (!this.node.parentElement) {
+      return;
+    }
+
     const new_val = this.node.getAttribute("data-checked") != "true";
     if (new_val) {
       this.node.setAttribute("data-checked", "true");
@@ -178,6 +219,18 @@ export class TilePointerHandlers {
     }
     this.$.dispatchEvent(new CustomEvent("checkedChange", {
       detail: { tiles: current },
+    }));
+  }
+
+  //
+  private context_menu(e: PointerEvent): void {
+    e.preventDefault();
+    this.$.dispatchEvent(new CustomEvent("contextMenu", {
+      detail: {
+        tile: this.id,
+        clientX: e.clientX,
+        clientY: e.clientY,
+      },
     }));
   }
 

@@ -41,7 +41,7 @@ During tile addition, if `data-x` and `data-y` are `-1` or unspecified, the tile
 
 - Do not add border, margin, padding or scale to `classNames.group` and `classNames.groupTiles`.
 - You can add padding or border to `classNames.groupLabel` only if `box-sizing: border-box;`. Do not add margin to it.
-- Do not add border, margin, padding or scale to `classNames.tile`. You may add border, padding and scale to `classNames.tileContent` with the `box-sizing: border-box;` CSS property.
+- Do not add border, margin, padding or scale to `classNames.tile`. You may add border, padding and scale to `classNames.tileContent`.
 - Outline mayn't work well in `className.tile`, as it may be clipped off; prefer a border.
 
 ## Rearranging

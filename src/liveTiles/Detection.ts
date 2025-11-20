@@ -141,15 +141,22 @@ export class Detection {
       tile!.attachedHandlers = node;
       tile!.dom = node;
 
+      // tile <button> style settings
+      node.style.position = "absolute";
+
+      // content <div> style settings
+      const content_div = node.getElementsByClassName(this.$._class_names.tileContent)[0] as HTMLElement;
+      content_div.style.boxSizing = "border-box";
+      content_div.style.width = "100%";
+      content_div.style.height = "100%";
+      content_div.style.overflow = "hidden";
+
       // transfer group?
       const is_group_transfer = !!maybe_old_group && maybe_old_group! !== new_group!;
 
       // on tile's first iteration (add), or
       // on group transfer, we've identical code.
       if (tile_first_iteration || is_group_transfer) {
-        // positioned as absolute
-        node.style.position = "absolute";
-
         // remove tile from old group
         if (is_group_transfer) {
           maybe_old_group!.simple.removeTile(id);
@@ -341,8 +348,21 @@ export class Detection {
       group.attachedHandlers = group_dom;
     }
 
-    // positioned as absolute
+    // group <div> style settings
+    group_dom.style.display = "flex";
+    group_dom.style.flexDirection = "column";
     group_dom.style.position = "absolute";
+    group_dom.style.transition = "transform 0.2s ease";
+    group_dom.style.gap = this.$._tile_gap + "rem";
+
+    // group label <div> style settings
+    const group_label_div = group_dom.getElementsByClassName(this.$._class_names.groupLabel)[0] as HTMLElement;
+    group_label_div.style.boxSizing = "border-box";
+    group_label_div.style.overflow = "hidden";
+
+    // group label text <span> style settings
+    const group_label_text_span = group_label_div.getElementsByClassName(this.$._class_names.groupLabelText)[0] as HTMLElement;
+    group_label_text_span.style.wordBreak = "keep-all";
 
     // return
     return changed;

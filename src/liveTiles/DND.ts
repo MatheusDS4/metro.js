@@ -14,6 +14,9 @@ export class DND {
   // TileDND is a direct child of the Core's container.
   public tileDNDDOM: null | HTMLElement = null;
 
+  //
+  public tileButton: null | HTMLButtonElement = null;
+
   // tile actively dragging
   public tileId: string = "";
 
@@ -38,6 +41,7 @@ export class DND {
     this.tileDNDDOM = dnd_dom_list.length == 0 ? null : dnd_dom_list[0] as HTMLElement;
     if (this.tileDNDDOM) {
       this.tileDNDDraggable = new Draggable();
+      // - [ ] do not forget setting `dragging` on drag start and end
     }
   }
 }
