@@ -445,6 +445,9 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
   }
   public set dragEnabled(val) {
     this._drag_enabled = val;
+    if (!this._drag_enabled) {
+      this._dnd.cancel();
+    }
   }
 
   /**

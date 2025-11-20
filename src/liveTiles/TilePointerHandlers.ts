@@ -83,7 +83,7 @@ export class TilePointerHandlers {
 
   //
   private window_mouse_move(e: MouseEvent): void {
-    if (!this.draggable_ready) {
+    if (!this.draggable_ready && this.$._drag_enabled) {
       this.$._dnd.initTileDNDDraggable();
       this.$._dnd.tileId = this.id;
       this.$._dnd.tileButton = this.node;
@@ -200,6 +200,11 @@ export class TilePointerHandlers {
   private toggle_check(): void {
     // removed? do nothing.
     if (!this.node.parentElement) {
+      return;
+    }
+
+    // proceed only if checkEnabled=true
+    if (!this.$._check_enabled) {
       return;
     }
 

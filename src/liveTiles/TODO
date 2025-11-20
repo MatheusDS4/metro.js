@@ -24,17 +24,17 @@ Groups:
 
 Trick to use: Draggable needs to drag the tileDND element, not the tile itself. For this, simply dispatch virtual `mousedown` and `touchdown` (with the same device ID as the tile's touch) events with corresponding coordinates and touch collections (touches/targetTouches/changedTouches).
 
-- [ ] Make tile invisible while dragging (and tileDND visible)
-- [ ] Touch start
+- [ ] drag start should make tileDND visible and tileButton hidden
+- [ ] do not forget setting `dragging` on drag start and end
+- [ ] drag end should make tileDND hidden back and tileButton visible back
+
+## Tile pointer handlers
+
+- [ ] TilePointerHandlers: Touch start
   - [ ] Trigger click
-  - [ ] Trigger check
-  - [ ] Trigger drag-n-drop (long-held)
+  - [ ] Trigger drag-n-drop (long-held; shorter than check's hold)
     - [ ] Trigger events
-- [ ] Mouse down
-  - [ ] Trigger click
-  - [ ] Trigger check
-  - [ ] Trigger drag-n-drop (after short-delta)
-    - [ ] Trigger events
+  - [ ] Trigger check-toggle (longer-held than drag-n-drop's hold)
 
 More:
 
