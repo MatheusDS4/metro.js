@@ -7,12 +7,17 @@ import * as MathUtils from "../utils/MathUtils";
 //
 export class GroupPointerHandlers {
   //
-  public constructor(private readonly $: Core) {
+  public constructor(
+    private readonly $: Core,
+    private readonly node: HTMLDivElement
+  ) {
     //
   }
 
   //
-  public attach(node: HTMLDivElement): void {
+  public attach(): void {
+    const { node } = this;
+
     fixme();
   }
 }

@@ -35,6 +35,11 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
    */
   public _detection: Detection;
   /**
+   * Global `window` handlers contributed by tile and group pointer handlers.
+   * @hidden
+   */
+  public _window_handlers: [string, Function][] = [];
+  /**
    * @hidden
    */
   public _tile_tweens: gsap.core.Tween[] = [];
@@ -214,6 +219,11 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
       this._rem = val;
     });
 
+    // outside click handler
+    const click_outside_handler = this._click_outside.bind(this);
+    window.addEventListener("click", click_outside_handler);
+    this._window_handlers.push(["click", click_outside_handler]);
+
     // rearrange
     this.rearrange();
   }
@@ -254,6 +264,11 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
     this._dnd.tileDNDDraggable = null;
     this._dnd.groupDraggable?.[1].destroy();
     this._dnd.groupDraggable = null;
+
+    // discard global handlers
+    for (const [type, fn] of this._window_handlers) {
+      window.removeEventListener(type, fn as any);
+    }
 
     // discard tile tweens
     for (const tween of this._tile_tweens) {
@@ -609,6 +624,28 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
 
     // rearrange
     this.rearrange();
+  }
+
+  // handle click outside
+  private _click_outside(e: MouseEvent): void {
+    let outside = true;
+    g: for (const [,g] of this._groups) {
+      for (const [,tile] of g.tiles) {
+        if (tile.dom) {
+          const r = tile.dom!.getBoundingClientRect();
+          // .matches(":hover") does not work
+          // on touchscreens.
+          if (
+            e.clientX >= r.left && e.clientX < r.right &&
+            e.clientY >= r.top && e.clientY < r.bottom
+          ) {
+            outside = false;
+            break g;
+          }
+        }
+      }
+    }
+    if (outside) this.uncheckAll();
   }
 }
 

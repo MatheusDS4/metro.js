@@ -131,7 +131,7 @@ export class Detection {
       //
       // `CoreTile.attachedHandlers` (compare element)
       if (tile ? tile.attachedHandlers !== node : true) {
-        new TilePointerHandlers(this.$).attach(node);
+        new TilePointerHandlers(this.$, node).attach();
       }
 
       // initialize tile
@@ -334,7 +334,7 @@ export class Detection {
     //
     // `CoreGroup.attachedHandlers` (compare element)
     if (group.attachedHandlers !== group_dom) {
-      new GroupPointerHandlers(this.$).attach(group_dom);
+      new GroupPointerHandlers(this.$, group_dom).attach();
       group.attachedHandlers = group_dom;
     }
 
