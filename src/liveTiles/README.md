@@ -36,3 +36,22 @@ During tile addition, if `data-x` and `data-y` are `-1` or unspecified, the tile
 - `data-x` - Tile X coordinate (1x1).
 - `data-y` - Tile Y coordinate (1x1).
 - `data-size` - Tile size (indicated by the `TileSize` enumeration: `small` (1x1), `medium` (2x2), `wide` (4x2) and `large` (4x4))
+
+## Style recommendations
+
+- Do not add border, margin, padding or scale to `classNames.group` and `classNames.groupTiles`.
+- You can add padding or border to `classNames.groupLabel` only if `box-sizing: border-box;`. Do not add margin to it.
+- Do not add border, margin, padding or scale to `classNames.tile`. You may add border, padding and scale to `classNames.tileContent` with the `box-sizing: border-box;` CSS property.
+- Outline mayn't work well in `className.tile`, as it may be clipped off; prefer a border.
+
+## Rearranging
+
+If your container starts at zero scale, then it is necessary to manually call `.rearrangeMin()` for the first time the container opens.
+
+For example:
+
+```js
+const aborter = core.rearrangeMin();
+
+// Abort when necessary
+aborter.abort();

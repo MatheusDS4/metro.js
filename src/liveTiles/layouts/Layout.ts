@@ -169,12 +169,13 @@ export abstract class Layout {
       this.$._tile_tweens.push(tween);
     }
 
-    // resize groupTiles div
+    // groupTiles div stuff
     if (group_tiles_div) {
       let min_w = 0;
       if (this.$._dir == "horizontal") {
         min_w = 18;
       }
+      group_tiles_div!.style.position = "relative";
       group_tiles_div!.style.width = Math.max(min_w, tile_list_width_rem) + "rem";
       group_tiles_div!.style.height = tile_list_height_rem + "rem";
     }
