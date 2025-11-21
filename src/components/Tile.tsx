@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { Color } from "@hydroperx/color";
 
 // local
+import { Icon } from "./Icon";
 import { TileModeContext } from "./TileModeContext";
 import { TileSize } from "../liveTiles/TileSize";
 import { RTLContext } from "../layout/RTL";
@@ -232,10 +233,15 @@ export function Tile(params: {
       onPointerDown={pointer_down}
       $background={params.background ?? theme.colors.foreground}
       $foreground={params.foreground || theme.colors.foreground}
+      $primary={theme.colors.primary}
+      $primary_foreground={theme.colors.primaryForeground}
       $icon_size={((Math.max(60, params.iconSize ?? 100)) / 100) * 57}>
 
       <div className="Tile-content" ref={content_ref}>
         {params.children}
+        <div className="Tile-checked-rect">
+          <Icon native="checked" size={13}/>
+        </div>
       </div>
     </Tile_button>
   );
@@ -245,6 +251,8 @@ export function Tile(params: {
 const Tile_button = styled.button<{
   $background: string,
   $foreground: string,
+  $primary: string,
+  $primary_foreground: string,
   $icon_size: number,
 }> `
   && {
@@ -295,6 +303,29 @@ const Tile_button = styled.button<{
     width: 100%;
     height: 100%;
   }
+
+  /* checked rect */
+
+    && > .Tile-content > .Tile-checked-rect {
+      position: absolute;
+      right: -7rem;
+      top: -6rem;
+      padding: 0.5rem;
+      width: 9rem;
+      height: 9rem;
+      background: ${$ => $.$primary};
+      color: ${$ => $.$primary_foreground};
+      transform: rotate(45deg);
+      visibility: hidden;
+    }
+
+    &&[data-checked="true"] > .Tile-content > .Tile-checked-rect {
+      visible: true;
+    }
+
+    && > .Tile-content > .Tile-checked-rect > .Icon {
+      transform: rotate(-45deg) translate(-3.2rem, 6.9rem);
+    }
 
   /* icon-label page variant */
 

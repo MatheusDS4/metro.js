@@ -106,7 +106,7 @@ const Img = styled.img<{
   && {
     object-fit: contain;
     width: ${$ => $.$computed_width};
-    width: ${$ => $.$computed_height};
+    height: ${$ => $.$computed_height};
     vertical-align: middle;
   }
 `;
