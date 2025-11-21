@@ -30,7 +30,7 @@ export class VerticalLayout extends Layout {
 
     // read groups in sequential order
     let groups = Array.from(this.$._groups.entries());
-    groups.sort((a, b) => a[0] - b[0]);
+    groups.sort(([a], [b]) => a - b);
 
     // rearrange group tiles and reposition groups
     for (const [i, group] of groups) {
@@ -106,7 +106,7 @@ export class VerticalLayout extends Layout {
 
     // read groups in sequential order
     let group_plus_idx = Array.from(this.$._groups.entries());
-    group_plus_idx.sort((a, b) => a[0] - b[0]);
+    group_plus_idx.sort(([a], [b]) => a - b);
     const groups = group_plus_idx.map(([,g]) => g);
 
     // find groupIdx in this.groups for this column

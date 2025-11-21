@@ -275,12 +275,24 @@ export class DND {
     this.tileButton = this.$._groups.values()
       .find(g => g.tiles.has(this.tileId))?.tiles.get(this.tileId)?.dom ?? null;
 
+    // cancel movement timeout
+    if (this._movement_timeout != -1) {
+      window.clearTimeout(this._movement_timeout);
+      this._movement_timeout = -1;
+    }
+
     // exit if the tile has been removed while dragging.
     if (!(this.tileButton && this.tileButton!.parentElement)) {
       // Core#dragEnd
       this.$.dispatchEvent(new CustomEvent("dragEnd", {
         detail: { id: this.tileId, dnd: this.tileDNDDOM! },
       }));
+
+      // reset some vars
+      this.dragging = false;
+      this.tileId = "";
+      this.tileButton = null;
+
       return;
     }
 
@@ -345,7 +357,7 @@ export class DND {
 
     // check the nearest intersection
     const this_rect = Rectangle.from(getOffset(element as HTMLElement, this.$._container)!);
-    let match_index = -1;
+    let new_index = -1;
     let greater_intersection: null | Rectangle = null;
     for (const [idx,g] of this.$._groups) {
       if (g.id == this.groupDraggable![0] || !g.dom) {
@@ -354,7 +366,7 @@ export class DND {
       const g_rect = Rectangle.from(getOffset(g.dom!, this.$._container)!);
       const intersection = this_rect.intersection(g_rect);
       if (intersection && (!greater_intersection || intersection.area > greater_intersection!.area)) {
-        match_index = idx;
+        new_index = idx;
         greater_intersection = intersection;
       }
     }
@@ -363,14 +375,30 @@ export class DND {
     // (although in this case we need to manually
     // reorder groups to act like a splice,
     // later emitting a `reorderGroups` event.)
-    if (match_index !== -1) {
+    if (new_index !== -1) {
       if (this._movement_timeout != -1) {
         window.clearTimeout(this._movement_timeout);
         this._movement_timeout = -1;
       }
-
       this._movement_timeout = window.setTimeout(() => {
-        fixme();
+        let group_pairs = Array.from(this.$._groups.entries());
+        group_pairs.sort(([a], [b]) => a - b);
+        let groups = group_pairs.map(p => p[1]);
+        const old_index = groups.findIndex(g => g.id == this.groupDraggable![0]);
+        const this_group = groups[old_index];
+        groups.splice(new_index, 0, this_group);
+        groups.splice(old_index + (new_index <= old_index ? 1 : 0), 1);
+        this.$._groups.clear();
+        for (const [i, g] of groups.entries()) {
+          this.$._groups.set(i, g);
+        }
+        // trigger Core#reorderGroups event
+        this.$.dispatchEvent(new CustomEvent("reorderGroups", {
+          detail: new Map(groups.entries().map(([i, g]) => [i, g.id]))
+        }));
+
+        // rearrange
+        this.$.rearrange();
       }, 1000);
     }
 
@@ -378,5 +406,31 @@ export class DND {
     this.$.dispatchEvent(new CustomEvent("groupDragMove", {
       detail: { id: this.groupDraggable![0], element: element as HTMLDivElement },
     }));
+  }
+
+  //
+  private _group_drag_end(element: Element, x: number, y:  number, event: Event): void {
+    // cancel movement timeout
+    if (this._movement_timeout != -1) {
+      window.clearTimeout(this._movement_timeout);
+      this._movement_timeout = -1;
+    }
+
+    //
+    (element as HTMLElement).style.zIndex = "";
+
+    // reset some vars
+    this.dragging = false;
+    this.groupDraggable![1].destroy();
+    this.groupDraggable = null;
+    this._original_state.clear();
+
+    // Core#groupDragEnd
+    this.$.dispatchEvent(new CustomEvent("groupDragEnd", {
+      detail: { id: this.groupDraggable![0], element: element as HTMLDivElement },
+    }));
+
+    // rearrange
+    this.$.rearrange();
   }
 }

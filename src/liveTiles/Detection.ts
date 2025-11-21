@@ -102,7 +102,7 @@ export class Detection {
           this.$._groups.set(final_index, new_group!);
           // signal group move (length - 1)
           this.$.dispatchEvent(new CustomEvent("reorderGroups", {
-            detail: new Map(this.$._groups.entries().map(([id, g]) => [id, g.id]))
+            detail: new Map(this.$._groups.entries().map(([i, g]) => [i, g.id]))
           }));
         } else {
           let final_index = i;
@@ -113,7 +113,7 @@ export class Detection {
           // signal group move
           if (i != final_index) {
             this.$.dispatchEvent(new CustomEvent("reorderGroups", {
-              detail: new Map(this.$._groups.entries().map(([id, g]) => [id, g.id]))
+              detail: new Map(this.$._groups.entries().map(([i, g]) => [i, g.id]))
             }));
           }
         }
@@ -334,7 +334,7 @@ export class Detection {
       // signal group move
       if (new_index != final_index) {
         this.$.dispatchEvent(new CustomEvent("reorderGroups", {
-          detail: new Map(this.$._groups.entries().map(([id, g]) => [id, g.id]))
+          detail: new Map(this.$._groups.entries().map(([i, g]) => [i, g.id]))
         }));
       }
     }
