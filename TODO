@@ -21,14 +21,12 @@
 # Live tiles
 
 - [ ] Done
-  - [ ] When one or more tiles are checked, enter checking mode styles
-  - [ ] When tiles are dragging, enter drag-n-drop mode styles
-  - [ ] Stylize tiles and their pages
-  - [ ] Icon+label tiles should be displayed like that: (note that icon may be a logo as a rectangle)
+  - [ ] Stylize TilePage
+  - [ ] Animate page roll (use a `MutationObserver` to dynamically respond to new pages being added and pages being removed)
+  - [ ] Icon+label pages should be displayed like that: (note that icon may be a logo as a rectangle)
     - [ ] label = div with display=flex, flex-direction=column, justify-content=end
-  - [ ] Icon+label tiles = hide label in small tiles (1x1)
-  - [ ] Label+icon tiles use a subsubheading label. Icon should be way smaller than in icon+label tiles. They should be just "icon" tiles for small tiles (1x1).
-  - [ ] Tile X/Y may be omitted or -1
+  - [ ] Icon+label pages = hide label in small tiles (1x1)
+  - [ ] Label+icon pages use a subsubheading label. Icon should be way smaller than in icon+label tiles. They should be just "icon" tiles for small tiles (1x1).
   - [ ] Support size-conditional live content pages
     - [ ] One page can target multiple sizes (e.g. support attributes like `size="< wide"` (less-than), greater-than and exact (`=` prefix optional); the page's `size` attribute will result in multiple class names like `.medium` and `.wide`)
   - [ ] Icon/logo size should be more based in percentage

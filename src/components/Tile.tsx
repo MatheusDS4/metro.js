@@ -56,6 +56,11 @@ export function Tile(params: {
    */
   labelColor?: string,
 
+  /**
+   * Whether the tile is disabled or not.
+   */
+  disabled?: boolean,
+
 }): React.ReactNode {
 
   //
@@ -198,6 +203,7 @@ export function Tile(params: {
         ...(params.color ? [] : ["transparent"]),
         ...(params.className ?? "").split(" ").filter(c => c != "")
       ].join(" ")}
+      disabled={params.disabled}
       data-id={params.id}
       data-x={params.x?.toString()}
       data-y={params.y?.toString()}
@@ -234,6 +240,10 @@ const Tile_button = styled.button<{
     outline: none;
     padding: 0;
     margin: 0;
+  }
+
+  &&:disabled {
+    opacity: 0.5;
   }
 
   && > .Tile-content {
