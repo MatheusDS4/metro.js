@@ -1,4 +1,4 @@
-# Icons
+# Icons and logos
 
 The `Icon` component is colored automatically as black or white every frame according to the computed cascading `color` property.
 
@@ -20,3 +20,7 @@ These icons can then be used in for example the `Icon` and `CircleButton` compon
 
 - To unregister a previously registered icon, use `IconMap.unregister()`.
 - Retrieve a registered icon's source URI using `IconMap.get()`.
+
+## Logo
+
+Similiarly, for logos, you can use the `Logo` component or `LogoMap`.

@@ -11,6 +11,7 @@ import { RTLContext } from "../layout/RTL";
 import { ThemeContext, Theme } from "../theme/Theme";
 import * as ColorUtils from "../utils/ColorUtils";
 import { REMObserver } from "../utils/REMObserver";
+import * as REMConvert from "../utils/REMConvert";
 
 /**
  * Live tile inside a `TileGroup` container.
@@ -61,6 +62,14 @@ export function Tile(params: {
    * Whether the tile is disabled or not.
    */
   disabled?: boolean,
+
+  /**
+   * Icon size percent inside 57x57 logical pixels.
+   * Clamps to minimum 60%.
+   *
+   * @default 100
+   */
+  iconSize?: number,
 
 }): React.ReactNode {
 
@@ -199,6 +208,7 @@ export function Tile(params: {
     <Tile_button
       className={[
         "Tile",
+        params.size,
         ...(mode.checking ? ["checking-mode"] : []),
         ...(mode.dnd ? ["dnd-mode"] : []),
         ...(params.background ? [] : ["transparent"]),
@@ -221,7 +231,8 @@ export function Tile(params: {
       }}
       onPointerDown={pointer_down}
       $background={params.background ?? theme.colors.foreground}
-      $foreground={params.foreground || theme.colors.foreground}>
+      $foreground={params.foreground || theme.colors.foreground}
+      $icon_size={((Math.max(60, params.iconSize ?? 100)) / 100) * 57}>
 
       <div className="Tile-content" ref={content_ref}>
         {params.children}
@@ -234,6 +245,7 @@ export function Tile(params: {
 const Tile_button = styled.button<{
   $background: string,
   $foreground: string,
+  $icon_size: number,
 }> `
   && {
     border: none;
@@ -252,6 +264,7 @@ const Tile_button = styled.button<{
     color: ${$ => $.$foreground};
     transition: opacity 0.2s, transform 0.2s ease-out, scale 0.2s ease-out;
     background: linear-gradient(90deg, ${$ => $.$background} 0%, ${$ => Color($.$background).lighten(0.15).hex().toString()} 100%);
+    position: relative;
   }
 
   &&:hover > .Tile-content {
@@ -273,4 +286,67 @@ const Tile_button = styled.button<{
   &&.dnd-mode > .Tile-content {
     scale: 0.92;
   }
+
+  && > .Tile-content > .TilePage {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* icon-label page variant */
+
+    && > .Tile-content > .TilePage[data-variant="iconLabel"] {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    && > .Tile-content > .TilePage[data-variant="iconLabel"] > .Group {
+      width: ${$ => REMConvert.pixels.rem($.$icon_size)}rem;
+      height: ${$ => REMConvert.pixels.rem($.$icon_size)}rem;
+    }
+
+    &&.small > .Tile-content > .TilePage[data-variant="iconLabel"] > .Group {
+      width: ${$ => REMConvert.pixels.rem($.$icon_size - 20)}rem;
+      height: ${$ => REMConvert.pixels.rem($.$icon_size - 20)}rem;
+    }
+
+    && > .Tile-content > .TilePage[data-variant="iconLabel"] > .Label {
+      position: absolute;
+      left: 1rem;
+      right: 1rem;
+      bottom: 0.7rem;
+    }
+
+    &&.small > .Tile-content > .TilePage[data-variant="iconLabel"] > .Label {
+      visibility: hidden;
+    }
+
+  /* label-icon page variant */
+
+    && > .Tile-content > .TilePage[data-variant="labelIcon"] > .Label {
+      position: absolute;
+      font-size: 1.3rem;
+      left: 0.1rem;
+      right: 0.1rem;
+      top: 0.3rem;
+    }
+
+    &&.small > .Tile-content > .TilePage[data-variant="labelIcon"] > .Label {
+      visibility: hidden;
+    }
+
+    && > .Tile-content > .TilePage[data-variant="labelIcon"] > .Group {
+      width: ${$ => REMConvert.pixels.rem($.$icon_size - 25)}rem;
+      height: ${$ => REMConvert.pixels.rem($.$icon_size - 25)}rem;
+    }
+
+    &&:not(.small) > .Tile-content > .TilePage[data-variant="labelIcon"] > .Group {
+      position: absolute;
+      bottom: 0.7rem;
+    }
 `;

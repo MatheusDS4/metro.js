@@ -1,5 +1,6 @@
 export * from "./Root";
 export * from "./Icon";
+export * from "./Logo";
 export * from "./ProgressRing";
 export * from "./ProgressBar";
 export * from "./Group";

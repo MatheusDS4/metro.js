@@ -21,17 +21,20 @@
 # Live tiles
 
 - [ ] Done
+  - [ ] Show a tag on currently checked tiles.
   - [ ] Stylize TilePage
   - [ ] Animate page roll (use a `MutationObserver` to dynamically respond to new pages being added and pages being removed)
+    - [ ] Look only for pages without size condition or matching size condition
+    - [ ] Look only for `.TilePage`s (ignore checked rect)
+    - [ ] Reset page roll animation in case tile size changes
+    - [ ] Reset page roll animation in case page size conditions change
   - [ ] Icon+label pages should be displayed like that: (note that icon may be a logo as a rectangle)
     - [ ] label = div with display=flex, flex-direction=column, justify-content=end
   - [ ] Icon+label pages = hide label in small tiles (1x1)
   - [ ] Label+icon pages use a subsubheading label. Icon should be way smaller than in icon+label tiles. They should be just "icon" tiles for small tiles (1x1).
   - [ ] Support size-conditional live content pages
     - [ ] One page can target multiple sizes (e.g. support attributes like `size="< wide"` (less-than), greater-than and exact (`=` prefix optional); the page's `size` attribute will result in multiple class names like `.medium` and `.wide`)
-  - [ ] Icon/logo size should be more based in percentage
-    - [ ] Icon size = percent inside 57x57 logical pixels.
-    - [ ] Logo size = percent inside horizontal 172 logical pixels.
+  - [ ] Icon size = percent inside 57x57 logical pixels.
   - [x] Optional `TilePlus` controller with `.checked()`, `.checkAll()`, `.uncheckAll()` and `.inlineGroupsAvailable()` methods
 - [ ] Transparent tiles should have a drop shadow
 

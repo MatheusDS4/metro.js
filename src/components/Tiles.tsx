@@ -506,6 +506,7 @@ export function Tiles(params: {
     <Tiles_div
       className={[
         "Tiles",
+        ...(rtl ? ["rtl"] : []),
         ...(params.className ?? "").split(" ").filter(c => c != "")
       ].join(" ")}
       data-direction={params.direction.toString()}
@@ -703,5 +704,18 @@ const Tiles_div = styled.div<{
     color: ${$ => $.$foreground};
     font-size: 1.2em;
     font-weight: lighter;
+  }
+
+  &&.rtl .Tile-content > .TilePage[data-variant="iconLabel"] > .Label,
+  &&.rtl .Tile-content > .TilePage[data-variant="labelIcon"] > .Label {
+    text-align: right;
+  }
+
+  &&:not(.rtl) .Tile:not(.small) > .Tile-content > .TilePage[data-variant="labelIcon"] > .Group {
+    left: 0.2rem;
+  }
+
+  &&.rtl .Tile:not(.small) > .Tile-content > .TilePage[data-variant="labelIcon"] > .Group {
+    right: 0.2rem;
   }
 `;
