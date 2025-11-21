@@ -13,3 +13,9 @@ export { escapable } from "./EscapableUtils";
 
 // random utilities
 export { randomHex } from "./RandomUtils";
+
+// Rectangle
+export { Rectangle, type IntersectionSide } from "./Rectangle";
+
+// Point
+export { Point } from "./Point";

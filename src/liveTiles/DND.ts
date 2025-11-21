@@ -1,11 +1,13 @@
 // third-party
 import Draggable from "@hydroperx/draggable";
+import getOffset from "getoffset";
 
 // local
 import type { BulkChange, Core } from "./Core";
 import { CoreGroup, CoreTile } from "./CoreGroup";
-import { MAXIMUM_Z_INDEX } from "../utils/Constants";
 import { type SnapResult } from "./layouts/Layout";
+import { MAXIMUM_Z_INDEX } from "../utils/Constants";
+import { Rectangle } from "../utils/Rectangle";
 
 /**
  * Drag-n-drop implementation.
@@ -332,5 +334,18 @@ export class DND {
     this.$.dispatchEvent(new CustomEvent("groupDragStart", {
       detail: { id: this.groupDraggable![0], element: element as HTMLDivElement },
     }));
+  }
+
+  //
+  private _group_drag_move(element: Element, x: number, y:  number, event: Event): void {
+    // exit if the group has been removed while dragging.
+    if (!element.parentElement) {
+      return;
+    }
+
+    // check the nearest intersection
+    const this_rect = Rectangle.from(getOffset(element as HTMLElement, this.$._container)!);
+
+    fixme();
   }
 }
