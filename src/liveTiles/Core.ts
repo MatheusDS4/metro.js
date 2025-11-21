@@ -122,6 +122,11 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
   /**
    * @hidden
    */
+  public _rtl: boolean = false;
+
+  /**
+   * @hidden
+   */
   public _dnd: DND = new DND(this);
 
   /**
@@ -195,6 +200,11 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
      * Group label height in logical pixels.
      */
     labelHeight: number,
+    /**
+     * Whether to use right-to-left group label inputs.
+     * @default false
+     */
+    rtl?: boolean,
   }) {
     super();
     this._layout = params.direction == "horizontal" ? new HorizontalLayout(this) : new VerticalLayout(this);
@@ -203,6 +213,7 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
     this._container.style.position = "relative";
     this._dir = params.direction;
     this._class_names = structuredClone(params.classNames);
+    this._rtl = !!params.rtl;
     this.size1x1 = params.size1x1;
     this.tileGap = params.tileGap;
     this.groupGap = params.groupGap;
@@ -295,6 +306,16 @@ export class Core extends (EventTarget as TypedEventTarget<CoreEventMap>) {
       this._layout = this._dir == "horizontal" ? new HorizontalLayout(this) : new VerticalLayout(this);
       this._re_add_tiles();
     }
+  }
+
+  /**
+   * Whether to use right-to-left group label inputs.
+   */
+  public get rtl(): boolean {
+    return this._rtl;
+  }
+  public set rtl(val) {
+    this._rtl = val;
   }
 
   /**

@@ -21,7 +21,14 @@ export class DND {
   private _tile_dnd_click_handler: null | Function = null;
 
   // original state (in compact form (no DOM, no group labels))
+  //
+  // NOTE: _original_state is entirely unused for now.
+  // kept just in case we decide for changes in the future.
   private _original_state: Map<number, CoreGroup> = new Map();
+
+  // this timeout is used to make drag-n-drop less destructive.
+  // on drag move, wait a bit before moving tile/group.
+  private _movement_timeout = -1;
 
   //
   private _snap: null | SnapResult = null;
@@ -188,38 +195,47 @@ export class DND {
 
       // if threshold is met
       if (threshold_met) {
-        const old_group_id = this.tileId;
-        const new_group_id = this._snap!.group;
-        if (old_group_id == new_group_id) {
-          // move tile
-          const bulkChange: BulkChange = {
-            movedTiles: [{ id: this.tileId, x: this._snap!.x, y: this._snap!.y }],
-            groupTransfers: [],
-            groupRemovals: [],
-            groupCreation: null,
-          };
-          this.$.dispatchEvent(new CustomEvent("bulkChange", {
-            detail: bulkChange,
-          }));
-        } else {
-          // group transfer
-          const bulkChange: BulkChange = {
-            movedTiles: [],
-            groupTransfers: [{ group: new_group_id, id: this.tileId, x: this._snap!.x, y: this._snap!.y }],
-            groupRemovals: [],
-            groupCreation: null,
-          };
-          this.$.dispatchEvent(new CustomEvent("bulkChange", {
-            detail: bulkChange,
-          }));
+        // clear movement timeout
+        if (this._movement_timeout != -1) {
+          window.clearTimeout(this._movement_timeout);
+          this._movement_timeout = -1;
         }
+
+        this._movement_timeout = window.setTimeout(() => {
+          const old_group_id = this.tileId;
+          const new_group_id = this._snap!.group!;
+          if (old_group_id == new_group_id) {
+            // move tile
+            const bulkChange: BulkChange = {
+              movedTiles: [{ id: this.tileId, x: this._snap!.x, y: this._snap!.y }],
+              groupTransfers: [],
+              groupRemovals: [],
+              groupCreation: null,
+            };
+            this.$.dispatchEvent(new CustomEvent("bulkChange", {
+              detail: bulkChange,
+            }));
+          } else {
+            // group transfer
+            const bulkChange: BulkChange = {
+              movedTiles: [],
+              groupTransfers: [{ group: new_group_id, id: this.tileId, x: this._snap!.x, y: this._snap!.y }],
+              groupRemovals: [],
+              groupCreation: null,
+            };
+            this.$.dispatchEvent(new CustomEvent("bulkChange", {
+              detail: bulkChange,
+            }));
+          }
+        }, 1000);
       }
-    }/*
-    // otherwise restore state
-    else {
-      this._restore();
+    } else {
+      // clear movement timeout
+      if (this._movement_timeout != -1) {
+        window.clearTimeout(this._movement_timeout);
+        this._movement_timeout = -1;
+      }
     }
-    */
 
     // trigger Core#dragMove
     this.$.dispatchEvent(new CustomEvent("dragMove", {
