@@ -82,6 +82,22 @@ export class DND {
     }
   }
 
+  //
+  public initGroupDraggable(groupId: string, groupNode: HTMLElement): void {
+    // destroy previous Draggable
+    this.groupDraggable?.[1].destroy();
+    this.groupDraggable = null;
+
+    this.groupDraggable = [groupId, new Draggable(this.tileDNDDOM!, {
+      threshold: "0.5rem",
+      cascadingUnit: "rem",
+      setPosition: false,
+      onDragStart: this._group_drag_start.bind(this),
+      onDrag: this._group_drag_move.bind(this),
+      onDragEnd: this._group_drag_end.bind(this),
+    })];
+  }
+
   // cancels any active drag-n-drop
   public cancel(): void {
     if (this.tileDNDDOM && this._tile_dnd_click_handler) {
@@ -131,6 +147,12 @@ export class DND {
 
   //
   private _tile_drag_start(element: Element, x: number, y:  number, event: Event): void {
+    //
+    if (this._movement_timeout != -1) {
+      window.clearTimeout(this._movement_timeout);
+      this._movement_timeout = -1;
+    }
+
     // visibility changes
     this.tileDNDDOM!.style.visibility = "visible";
     this.tileButton!.style.visibility = "hidden";
@@ -253,6 +275,10 @@ export class DND {
 
     // exit if the tile has been removed while dragging.
     if (!(this.tileButton && this.tileButton!.parentElement)) {
+      // Core#dragEnd
+      this.$.dispatchEvent(new CustomEvent("dragEnd", {
+        detail: { id: this.tileId, dnd: this.tileDNDDOM! },
+      }));
       return;
     }
 
@@ -278,5 +304,33 @@ export class DND {
     // visibility changes
     this.tileButton!.style.visibility = "";
     this.tileDNDDOM!.style.visibility = "hidden";
+
+    // Core#dragEnd
+    this.$.dispatchEvent(new CustomEvent("dragEnd", {
+      detail: { id: this.tileId, dnd: this.tileDNDDOM! },
+    }));
+  }
+
+  //
+  private _group_drag_start(element: Element, x: number, y:  number, event: Event): void {
+    //
+    if (this._movement_timeout != -1) {
+      window.clearTimeout(this._movement_timeout);
+      this._movement_timeout = -1;
+    }
+
+    // backup state
+    this._original_state = this.$._clone_state();
+
+    //
+    this.dragging = true;
+
+    //
+    (element as HTMLElement).style.zIndex = MAXIMUM_Z_INDEX;
+
+    // Core#groupDragStart
+    this.$.dispatchEvent(new CustomEvent("groupDragStart", {
+      detail: { id: this.groupDraggable![0], element: element as HTMLDivElement },
+    }));
   }
 }

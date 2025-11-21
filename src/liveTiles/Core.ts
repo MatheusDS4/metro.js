@@ -831,15 +831,15 @@ export type CoreEventMap = {
   /**
    * Group's drag start event.
    */
-  groupDragStart: CustomEvent<{ id: string, dom: HTMLDivElement }>,
+  groupDragStart: CustomEvent<{ id: string, element: HTMLDivElement }>,
   /**
    * Group's drag move event.
    */
-  groupDragMove: CustomEvent<{ id: string, dom: HTMLDivElement }>,
+  groupDragMove: CustomEvent<{ id: string, element: HTMLDivElement }>,
   /**
    * Group's drag start event.
    */
-  groupDragEnd: CustomEvent<{ id: string, dom: HTMLDivElement }>,
+  groupDragEnd: CustomEvent<{ id: string, element: HTMLDivElement }>,
   /**
    * Event indicating which tiles are currently checked.
    */

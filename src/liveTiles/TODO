@@ -36,11 +36,7 @@ Group drag-n-drop mimmicks tiles a bit in how the Draggable instance is created,
 
 Drag-n-drop handlers (DND.ts):
 
-- [ ] _group_drag_start
-  - [ ] `groupDraggable=[groupId,draggable]`
-  - [ ] Assign _original_state (compact, without DOM)
-  - [ ] Set `dragging=true`
-  - [ ] Make group's Z-index maximum.
+- [x] _group_drag_start
 - [ ] _group_drag_move
 - [ ] _group_drag_end
   - [ ] If group was removed, exit.

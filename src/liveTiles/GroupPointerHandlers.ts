@@ -234,7 +234,7 @@ export class GroupPointerHandlers {
     this.touch_start_event = null;
     this.touch_start_id  = -1;
     if (this.dragged) {
-      // group#touchend
+      // group#touchcancel
       this.node.dispatchEvent(e);
 
       // cancel drag-n-drop timeout

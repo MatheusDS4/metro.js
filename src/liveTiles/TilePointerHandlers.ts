@@ -330,7 +330,7 @@ export class TilePointerHandlers {
     this.touch_start_event = null;
     this.touch_start_id  = -1;
     if (this.dragged) {
-      // tileDND#touchend
+      // tileDND#touchcancel
       this.$._dnd.tileDNDDOM?.dispatchEvent(e);
 
       // cancel drag-n-drop timeout
