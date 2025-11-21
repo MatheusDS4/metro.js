@@ -706,6 +706,11 @@ const Tiles_div = styled.div<{
     font-weight: lighter;
   }
 
+  &&:not(.rtl) .Tile-content > .TilePage[data-variant="iconLabel"] > .Label,
+  &&:not(.rtl) .Tile-content > .TilePage[data-variant="labelIcon"] > .Label {
+    text-align: left;
+  }
+
   &&.rtl .Tile-content > .TilePage[data-variant="iconLabel"] > .Label,
   &&.rtl .Tile-content > .TilePage[data-variant="labelIcon"] > .Label {
     text-align: right;

@@ -369,6 +369,11 @@ const Tile_button = styled.button<{
       align-items: center;
     }
 
+    &&.medium > .Tile-content > .TilePage[data-variant="iconLabel"] > .Group {
+      position: relative;
+      top: -0.4rem;
+    }
+
     && > .Tile-content > .TilePage[data-variant="iconLabel"] > .Group {
       width: ${$ => REMConvert.pixels.rem($.$icon_size)}rem;
       height: ${$ => REMConvert.pixels.rem($.$icon_size)}rem;
@@ -381,9 +386,11 @@ const Tile_button = styled.button<{
 
     && > .Tile-content > .TilePage[data-variant="iconLabel"] > .Label {
       position: absolute;
-      left: 1rem;
-      right: 1rem;
-      bottom: 0.7rem;
+      left: 0.6rem;
+      right: 0.6em;
+      bottom: 0.3rem;
+      overflow-wrap: anywhere;
+      max-height: 2.5rem;
     }
 
     &&.small > .Tile-content > .TilePage[data-variant="iconLabel"] > .Label {
@@ -398,6 +405,8 @@ const Tile_button = styled.button<{
       left: 0.1rem;
       right: 0.1rem;
       top: 0.3rem;
+      overflow-wrap: anywhere;
+      max-height: 4rem;
     }
 
     &&.small > .Tile-content > .TilePage[data-variant="labelIcon"] > .Label {
