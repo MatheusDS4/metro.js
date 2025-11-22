@@ -22,8 +22,5 @@
 
 - [x] Done
   - [ ] Fix renaming groups not working nice.
-- [ ] Test it
-  - [ ] Checking tiles
-  - [ ] Live tile content (2+ pages)
-  - [ ] Tile drag-n-drop
-  - [ ] Group drag-n-drop
+  - [ ] Fix tile drag-n-drop not doing any move
+  - [ ] Tile checked rect

@@ -90,7 +90,7 @@ export class DND {
     this.groupDraggable?.[1].destroy();
     this.groupDraggable = null;
 
-    this.groupDraggable = [groupId, new Draggable(this.tileDNDDOM!, {
+    this.groupDraggable = [groupId, new Draggable(groupNode, {
       threshold: "0.5rem",
       cascadingUnit: "rem",
       setPosition: false,
@@ -448,20 +448,21 @@ export class DND {
 
     //
     (element as HTMLElement).style.zIndex = "";
+    (element as HTMLElement).style.inset = "";
 
     //
     element.removeAttribute("data-dragging");
+
+    // Core#groupDragEnd
+    this.$.dispatchEvent(new CustomEvent("groupDragEnd", {
+      detail: { id: this.groupDraggable![0], element: element as HTMLDivElement },
+    }));
 
     // reset some vars
     this.dragging = false;
     this.groupDraggable![1].destroy();
     this.groupDraggable = null;
     this._original_state.clear();
-
-    // Core#groupDragEnd
-    this.$.dispatchEvent(new CustomEvent("groupDragEnd", {
-      detail: { id: this.groupDraggable![0], element: element as HTMLDivElement },
-    }));
 
     // rearrange
     this.$.rearrange();
