@@ -184,7 +184,7 @@ export class TilePointerHandlers {
     if (this.$._dnd.dragging || this.mouse_started) {
       return;
     }
-    e.preventDefault();
+    // e.preventDefault();
     this.touch_start_id = e.touches[0].identifier;
     this.enable_touch_dnd = false;
     this.just_held_long = false;
@@ -217,7 +217,7 @@ export class TilePointerHandlers {
     if (!touch) {
       return;
     }
-    e.preventDefault();
+    // e.preventDefault();
 
     // if moving touch out of tile, prevent drag-n-drop.
     if (this.allow_dnd_timeout != -1) {
@@ -305,7 +305,7 @@ export class TilePointerHandlers {
       }
       return;
     }
-    e.preventDefault();
+    // e.preventDefault();
 
     if (this.just_held_long) {
       this.just_held_long = false;
@@ -361,7 +361,7 @@ export class TilePointerHandlers {
       }
       return;
     }
-    e.preventDefault();
+    // e.preventDefault();
 
     // cancel drag-n-drop timeout
     if (this.allow_dnd_timeout != -1) {
