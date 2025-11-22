@@ -18,6 +18,7 @@ import {
   TilePage,
 } from "@hydroperx/metrodesign/components";
 import {
+  type BulkChange,
   type TileSize,
 } from "@hydroperx/metrodesign/liveTiles";
 import { RTLProvider } from "@hydroperx/metrodesign/layout";
@@ -27,30 +28,44 @@ import {
   ThemeProvider,
   type Theme,
 } from "@hydroperx/metrodesign/theme";
+import {
+  randomHex,
+} from "@hydroperx/metrodesign/utils";
 
 /**
  * The test.
  */
 function App() {
+  // short defer for reordering groups
+  const group_reorder_timeout = React.useRef(-1);
+
   // our groups
   const [groups, set_groups] = React.useState<MyGroup[]>([
     {
       id: "group1",
       label: "Group 1",
-      tiles: [
-        { id: "camera", size: "medium", x: -1, y: -1 },
-        { id: "bing", size: "small", x: -1, y: -1 },
-      ],
+      tiles: new Map([
+        ["camera", { size: "medium", x: -1, y: -1 }],
+        ["bing", { size: "small", x: -1, y: -1 }],
+      ]),
     }
   ]);
+  const groups_sync = React.useRef(groups);
+
+  // sync groups into a ref
+  React.useEffect(() => {
+
+    groups_sync.current = groups;
+
+  }, [groups]);
 
   // render groups.
   function render_groups(groups: MyGroup[]): React.ReactNode[] {
     let group_nodes: React.ReactNode[] = [];
-    for (let [i, group] of groups.entries()) {
+    for (let [i, group] of groups_sync.current.entries()) {
       const tile_nodes: React.ReactNode[] = [];
-      for (const tile of group.tiles) {
-        const node = render_tile(tile);
+      for (const [id, tile] of group.tiles) {
+        const node = render_tile(id, tile);
         if (node) {
           tile_nodes.push(node);
         }
@@ -65,11 +80,11 @@ function App() {
   }
 
   // render a tile.
-  function render_tile(tile: MyTile): undefined | React.ReactNode {
-    switch (tile.id) {
+  function render_tile(id: string, tile: MyTile): undefined | React.ReactNode {
+    switch (id) {
       case "camera": {
         return (
-          <Tile key={tile.id} id={tile.id} size="medium" background="#937" foreground="white">
+          <Tile key={id} id={id} size="medium" background="#937" foreground="white">
             <TilePage variant="iconLabel">
               <Group><Icon native="camera"/></Group>
               <Label>Camera</Label>
@@ -79,7 +94,7 @@ function App() {
       }
       case "bing": {
         return (
-          <Tile key={tile.id} id={tile.id} size="small" background="#f9c000" foreground="white">
+          <Tile key={id} id={id} size="small" background="#f9c000" foreground="white">
             <TilePage variant="iconLabel">
               <Group><Icon native="bing"/></Group>
               <Label>Bing</Label>
@@ -91,6 +106,78 @@ function App() {
         return undefined;
       }
     }
+  }
+
+  // handle bulk change in live tiles
+  function bulk_change(e: BulkChange): void {
+    const new_groups = structuredClone(groups_sync.current);
+    for (const m of e.movedTiles) {
+      const g = new_groups.find(g => g.tiles.has(m.id));
+      if (g) {
+        const t = g.tiles.get(m.id)!;
+        t.x = m.x;
+        t.y = m.y;
+      }
+    }
+    for (const transfer of e.groupTransfers) {
+      const old_group = new_groups.find(g => g.tiles.has(transfer.id))!;
+      const new_group = new_groups.find(g => g.id == transfer.group)!;
+      const t = old_group.tiles.get(transfer.id)!;
+      t.x = transfer.x;
+      t.y = transfer.y;
+      old_group.tiles.delete(transfer.id);
+      new_group.tiles.set(transfer.id, t);
+    }
+    for (const { id: group_id } of e.groupRemovals) {
+      const i = new_groups.findIndex(g => g.id == group_id);
+      new_groups.splice(i, 1);
+    }
+    if (e.groupCreation) {
+      const tile_id = e.groupCreation!.tile;
+      const old_group = new_groups.find(g => g.tiles.has(tile_id))!;
+      const new_group: MyGroup = {
+        id: "__" + randomHex(true),
+        label: "",
+        tiles: new Map(),
+      };
+      new_groups.push(new_group);
+      const t = old_group.tiles.get(tile_id)!;
+      t.x = -1;
+      t.y = -1;
+      old_group.tiles.delete(tile_id);
+      new_group.tiles.set(tile_id, t);
+    }
+    set_groups(new_groups);
+  }
+
+  // re-order groups
+  //
+  // here, keep order sequential and contiguous.
+  function reorder_groups(e: Map<number, string>): void {
+    if (group_reorder_timeout.current != -1) {
+      window.clearTimeout(group_reorder_timeout.current);
+      group_reorder_timeout.current = -1;
+    }
+    group_reorder_timeout.current = window.setTimeout(() => {
+      let new_groups = structuredClone(groups_sync.current);
+      let seq_1 = Array.from(e.entries());
+      seq_1.sort(([a], [b]) => a - b);
+      let seq_2: string[] = [];
+      for (let [, group_id] of seq_1) {
+        seq_2.push(group_id);
+      }
+      set_groups(seq_2.map(group_id => new_groups.find(g => g.id == group_id)!));
+    }, 3);
+  }
+
+  //
+  function rename_group(e: { id: string, label: string }): void {
+    let new_groups = structuredClone(groups_sync.current);
+    const group = new_groups.find(g => g.id == e.id);
+    if (group) {
+      group.label = e.label;
+    }
+    set_groups(new_groups);
   }
 
   return (
@@ -107,18 +194,12 @@ function App() {
             wheelHorizontal>
             <Tiles
               direction="horizontal"
-              dragEnabled={false}
-              checkEnabled={false}
-              renamingGroupsEnabled={false}
-              bulkChange={e => {
-                //fixme();
-              }}
-              reorderGroups={e => {
-                //fixme();
-              }}
-              renameGroup={e => {
-                //fixme();
-              }}>
+              dragEnabled
+              checkEnabled
+              renamingGroupsEnabled
+              bulkChange={bulk_change}
+              reorderGroups={reorder_groups}
+              renameGroup={rename_group}>
               {render_groups(groups)}
             </Tiles>
           </Root>
@@ -132,12 +213,11 @@ function App() {
 export type MyGroup = {
   id: string,
   label: string,
-  tiles: MyTile[],
+  tiles: Map<string, MyTile>,
 };
 
 // a tile
 export type MyTile = {
-  id: string,
   x: number,
   y: number,
   size: TileSize,
