@@ -31,11 +31,6 @@ export class HorizontalLayout extends Layout {
     for (const [, group] of groups) {
       this.rearrangeGroup(group);
 
-      // ignore from layout any group being dragged.
-      if (group.dom?.getAttribute("data-dragging") == "true") {
-        continue;
-      }
-
       // reposition group
       let width = 0;
       const dragging = this.$._dnd.dragging && this.$._dnd.groupDraggable?.[0] == group.id;

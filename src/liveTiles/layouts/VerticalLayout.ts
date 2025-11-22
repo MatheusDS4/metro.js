@@ -36,11 +36,6 @@ export class VerticalLayout extends Layout {
     for (const [i, group] of groups) {
       this.rearrangeGroup(group);
 
-      // ignore from layout any group being dragged.
-      if (group.dom?.getAttribute("data-dragging") == "true") {
-        continue;
-      }
-
       // reposition group
       const column = i % this.$._inline_groups;
       const left = column*group_w + column*this.$._group_gap;

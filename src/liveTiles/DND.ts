@@ -127,6 +127,7 @@ export class DND {
     if (this._movement_timeout != -1) {
       window.clearTimeout(this._movement_timeout);
       this._movement_timeout = -1;
+      this.$.rearrange();
     }
     this.tileButton = null;
     this.tileId = "";
@@ -255,6 +256,7 @@ export class DND {
         }
 
         this._movement_timeout = window.setTimeout(() => {
+          this._movement_timeout = -1;
           this._movement_timeout_multiplier = 1;
           const old_group_id = this.tileId;
           const new_group_id = this._snap!.group!;
@@ -400,7 +402,7 @@ export class DND {
     let new_index = -1;
     let greater_intersection: null | Rectangle = null;
     for (const [idx,g] of this.$._groups) {
-      if (!g.dom) {
+      if (g.id == this.groupDraggable![0] || !g.dom) {
         continue;
       }
       const g_rect = Rectangle.from(getOffset(g.dom!, this.$._container)!);
@@ -422,6 +424,7 @@ export class DND {
       }
       this._movement_timeout = window.setTimeout(() => {
         this._movement_timeout_multiplier = 1;
+        this._movement_timeout = -1;
 
         let group_pairs = Array.from(this.$._groups.entries());
         group_pairs.sort(([a], [b]) => a - b);
@@ -439,6 +442,16 @@ export class DND {
           detail: new Map(groups.entries().map(([i, g]) => [i, g.id]))
         }));
 
+        // reset some vars
+        if (!this.dragging) {
+          (element as HTMLElement).style.zIndex = "";
+          (element as HTMLElement).style.inset = "";
+
+          this.groupDraggable![1].destroy();
+          this.groupDraggable = null;
+          this._original_state.clear();
+        }
+
         // rearrange
         this.$.rearrange();
       }, 570 * this._movement_timeout_multiplier);
@@ -452,15 +465,11 @@ export class DND {
 
   //
   private _group_drag_end(element: Element, x: number, y:  number, event: Event): void {
-    // cancel movement timeout
-    if (this._movement_timeout != -1) {
-      window.clearTimeout(this._movement_timeout);
-      this._movement_timeout = -1;
-    }
-
     //
-    (element as HTMLElement).style.zIndex = "";
-    (element as HTMLElement).style.inset = "";
+    if (this._movement_timeout == -1) {
+      (element as HTMLElement).style.zIndex = "";
+      (element as HTMLElement).style.inset = "";
+    }
 
     //
     element.removeAttribute("data-dragging");
@@ -470,13 +479,16 @@ export class DND {
       detail: { id: this.groupDraggable![0], element: element as HTMLDivElement },
     }));
 
-    // reset some vars
+    //
     this.dragging = false;
-    this.groupDraggable![1].destroy();
-    this.groupDraggable = null;
-    this._original_state.clear();
 
-    // rearrange
-    this.$.rearrange();
+    // reset some vars
+    if (this._movement_timeout == -1) {
+      this.groupDraggable![1].destroy();
+      this.groupDraggable = null;
+      this._original_state.clear();
+
+      this.$.rearrange();
+    }
   }
 }
