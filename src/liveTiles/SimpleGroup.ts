@@ -179,12 +179,26 @@ export class SimpleGroup {
     tile!.y = y;
     
     // leave no holes
-    let [horizontal_hole, vertical_hole] = this.findHoles(x, y, tile.width, tile.height);
-    tile.x -= horizontal_hole;
-    tile.y -= vertical_hole;
-    [horizontal_hole, vertical_hole] = this.findHoles(x, y, tile.width, tile.height);
-    tile.x -= horizontal_hole;
-    tile.y -= vertical_hole;
+    for (;;) {
+      let found = false;
+      for (const [, other] of this.tiles) {
+        let [horizontal_hole, vertical_hole] = this.findHoles(other.x, other.y, other.width, other.height);
+        other.x -= horizontal_hole;
+        other.y -= vertical_hole;
+        if (horizontal_hole > 0 || vertical_hole > 0) {
+          found = true;
+        }
+        [horizontal_hole, vertical_hole] = this.findHoles(other.x, other.y, other.width, other.height);
+        other.x -= horizontal_hole;
+        other.y -= vertical_hole;
+        if (horizontal_hole > 0 || vertical_hole > 0) {
+          found = true;
+        }
+      }
+      if (!found) {
+        break;
+      }
+    }
 
     this.conflict_counter = 0;
     if (this.resolveConflicts(id)) {
