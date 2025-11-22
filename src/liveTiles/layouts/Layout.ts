@@ -49,7 +49,8 @@ export abstract class Layout {
       tile: { id: string, simple: SimpleTile, core: CoreTile },
       button: HTMLButtonElement,
       heightREM: number,
-      yREM: number
+      xREM: number,
+      yREM: number,
     }[] = [];
 
     // group tile-list div
@@ -72,6 +73,11 @@ export abstract class Layout {
       const { width, height } = simple;
       const x_rem = pos.x * this.$._size_1x1 + pos.x * this.$._tile_gap;
       const y_rem = pos.y * this.$._size_1x1 + pos.y * this.$._tile_gap;
+      /*
+      if (tileId == "terminal" && pos.x == 2) {
+        console.log(x_rem);
+      }
+      */
 
       const w_rem = width*this.$._size_1x1 + (width-1)*this.$._tile_gap;
       const h_rem = height*this.$._size_1x1 + (height-1)*this.$._tile_gap;
@@ -114,14 +120,15 @@ export abstract class Layout {
         // change only Y
         } else if (old_x != pos.x && old_y != pos.y) {
           tile.dom!.style.transform = `translateX(${x_rem}rem) translateY(-1000rem)`;
-          to_tween_y_late.push({ tile: { id: tileId, core: tile, simple }, button: tile.dom!, heightREM: h_rem, yREM: y_rem });
+          to_tween_y_late.push({ tile: { id: tileId, core: tile, simple }, button: tile.dom!, xREM: x_rem, heightREM: h_rem, yREM: y_rem });
         // change either only X or only Y
         } else {
-          const tween = gsap.to(tile.dom!, {
-            x: x_rem + "rem",
-            y: y_rem + "rem",
-            duration: 0.18
-          });
+          const old_x_rem = old_x * this.$._size_1x1 + old_x * this.$._tile_gap;
+          const old_y_rem = old_y * this.$._size_1x1 + old_y * this.$._tile_gap;
+          const tween = gsap.fromTo(tile.dom!,
+            { x: old_x_rem + "rem", y: old_y_rem + "rem" },
+            { x: x_rem + "rem", y: y_rem + "rem", duration: 0.18 }
+          );
           tile.tween = tween;
           tween!.then(() => {
             const i = this.$._tile_tweens.indexOf(tween);
@@ -146,9 +153,10 @@ export abstract class Layout {
 
     // tween Y from off view
     const middle = tile_list_height_rem / 2;
-    for (const { tile, button, heightREM, yREM } of to_tween_y_late) {
+    for (const { tile, button, heightREM, xREM, yREM } of to_tween_y_late) {
       const tween = gsap.fromTo(tile.core.dom!,
         {
+          x: xREM + "rem",
           y: (yREM + heightREM / 2 < middle ? -heightREM : tile_list_height_rem + heightREM) + "rem",
         },
         {
