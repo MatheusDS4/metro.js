@@ -399,16 +399,16 @@ export class DND {
 
     // check the nearest intersection
     const this_rect = Rectangle.from(getOffset(element as HTMLElement, this.$._container)!);
-    let new_index = -1;
+    let swap_target: null | string = null;
     let greater_intersection: null | Rectangle = null;
-    for (const [idx,g] of this.$._groups) {
+    for (const [,g] of this.$._groups) {
       if (g.id == this.groupDraggable![0] || !g.dom) {
         continue;
       }
       const g_rect = Rectangle.from(getOffset(g.dom!, this.$._container)!);
       const intersection = this_rect.intersection(g_rect);
       if (intersection && (!greater_intersection || intersection.area > greater_intersection!.area)) {
-        new_index = idx;
+        swap_target = g.id;
         greater_intersection = intersection;
       }
     }
@@ -417,7 +417,7 @@ export class DND {
     // (although in this case we need to manually
     // reorder groups to act like a splice,
     // later emitting a `reorderGroups` event.)
-    if (new_index !== -1) {
+    if (swap_target !== null) {
       if (this._movement_timeout != -1) {
         window.clearTimeout(this._movement_timeout);
         this._movement_timeout = -1;
@@ -426,25 +426,18 @@ export class DND {
         this._movement_timeout_multiplier = 1;
         this._movement_timeout = -1;
 
-        let group_pairs = Array.from(this.$._groups.entries());
-        group_pairs.sort(([a], [b]) => a - b);
-        let groups = group_pairs.map(p => p[1]);
-        const old_index = groups.findIndex(g => g.id == this.groupDraggable![0]);
-        const this_group = groups[old_index];
-        console.log("group drag move =")
-        console.log("  id =", this.groupDraggable![0]);
-        console.log("  old_index =", old_index);
-        console.log("  new_index =", new_index);
-        groups.splice(new_index, 0, this_group);
-        groups.splice(old_index + (new_index <= old_index ? 1 : 0), 1);
-        this.$._groups.clear();
-        for (const [i, g] of groups.entries()) {
-          this.$._groups.set(i, g);
+        //
+        const group_pairs = Array.from(this.$._groups.entries());
+        const pair_1 = group_pairs.find(([,g]) => g.id == this.groupDraggable![0]);
+        const pair_2 = group_pairs.find(([,g]) => g.id == swap_target!);
+        if (pair_1 && pair_2) {
+          this.$._groups.set(pair_1[0], pair_2[1]);
+          this.$._groups.set(pair_2[0], pair_1[1]);
+          // trigger Core#reorderGroups event
+          this.$.dispatchEvent(new CustomEvent("reorderGroups", {
+            detail: new Map(this.$._groups.entries().map(([i, g]) => [i, g.id]))
+          }));
         }
-        // trigger Core#reorderGroups event
-        this.$.dispatchEvent(new CustomEvent("reorderGroups", {
-          detail: new Map(groups.entries().map(([i, g]) => [i, g.id]))
-        }));
 
         // reset some vars
         if (!this.dragging) {
