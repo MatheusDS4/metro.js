@@ -174,7 +174,7 @@ export class DND {
 
     // visibility changes
     this.tileDNDDOM!.style.visibility = "visible";
-    this.tileButton!.style.visibility = "hidden";
+    this.tileButton!.style.display = "none";
 
     //
     if (this.tileDNDDOM?.children.length !== 0) {
@@ -208,7 +208,7 @@ export class DND {
 
     // visibility changes
     if (this.tileButton) {
-      this.tileButton!.style.visibility = "hidden";
+      this.tileButton!.style.display = "none";
     }
 
     // exit if the tile has been removed while dragging.
@@ -338,7 +338,7 @@ export class DND {
     this._original_state.clear();
 
     // visibility changes
-    this.tileButton!.style.visibility = "";
+    this.tileButton!.style.display = "";
     this.tileDNDDOM!.style.visibility = "hidden";
 
     //
