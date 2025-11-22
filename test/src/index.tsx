@@ -106,9 +106,9 @@ function App() {
       case "camera": {
         return (
           <Tile key={id} id={id} size={tile.size} x={tile.x} y={tile.y} background="#937" foreground="white">
-            <TilePage variant="iconLabel">
-              <Group><Icon native="camera"/></Group>
+            <TilePage variant="labelIcon">
               <Label>Camera</Label>
+              <Group><Icon native="camera"/></Group>
             </TilePage>
             <TilePage size=">= wide">
               <Group paddingLeft={10}>

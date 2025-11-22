@@ -396,6 +396,7 @@ const Tile_button = styled.button<{
       right: 0.6rem;
       bottom: 0.3rem;
       overflow-wrap: anywhere;
+      overflow: hidden;
       max-height: 2.5rem;
       font-size: 0.78rem;
     }
@@ -410,14 +411,22 @@ const Tile_button = styled.button<{
 
   /* label-icon page variant */
 
+    &&.small > .Tile-content > .TilePage[data-variant="labelIcon"] {
+      justify-content: center;
+      align-items: center;
+    }
+
     && > .Tile-content > .TilePage[data-variant="labelIcon"] > .Label {
       position: absolute;
-      font-size: 1.3rem;
-      left: 0.1rem;
-      right: 0.1rem;
-      top: 0.3rem;
+      font-weight: lighter;
+      opacity: 0.8;
+      font-size: 1.5rem;
+      left: 0.4rem;
+      right: 0.4rem;
+      top: 0.6rem;
       overflow-wrap: anywhere;
-      max-height: 4rem;
+      max-height: 4.5rem;
+      overflow: hidden;
     }
 
     &&.small > .Tile-content > .TilePage[data-variant="labelIcon"] > .Label {
@@ -425,13 +434,13 @@ const Tile_button = styled.button<{
     }
 
     && > .Tile-content > .TilePage[data-variant="labelIcon"] > .Group {
-      width: ${$ => REMConvert.pixels.rem($.$icon_size - 25)}rem;
-      height: ${$ => REMConvert.pixels.rem($.$icon_size - 25)}rem;
+      width: ${$ => REMConvert.pixels.rem($.$icon_size - 20)}rem;
+      height: ${$ => REMConvert.pixels.rem($.$icon_size - 20)}rem;
     }
 
     &&:not(.small) > .Tile-content > .TilePage[data-variant="labelIcon"] > .Group {
       position: absolute;
-      bottom: 0.7rem;
+      bottom: 0.2rem;
     }
 `;
 

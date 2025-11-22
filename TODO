@@ -21,6 +21,4 @@
 # Live tiles
 
 - [x] Done
-  - [ ] Fix tile drag-n-drop not working perfectly. (Something wrong in Layouts rearrangement and their snapping?)
-  - [ ] See whether label-icon tiles are fine in the style sheet.
 - [ ] Test group drag-n-drop

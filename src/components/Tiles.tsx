@@ -717,10 +717,10 @@ const Tiles_div = styled.div<{
   }
 
   &&:not(.rtl) .Tile:not(.small) > .Tile-content > .TilePage[data-variant="labelIcon"] > .Group {
-    left: 0.2rem;
+    left: 0.4rem;
   }
 
   &&.rtl .Tile:not(.small) > .Tile-content > .TilePage[data-variant="labelIcon"] > .Group {
-    right: 0.2rem;
+    right: 0.4rem;
   }
 `;
