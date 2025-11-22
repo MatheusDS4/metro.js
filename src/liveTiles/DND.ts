@@ -33,6 +33,9 @@ export class DND {
   private _movement_timeout = -1;
 
   //
+  private _movement_timeout_multiplier = 0;
+
+  //
   private _snap: null | SnapResult = null;
 
   //
@@ -188,6 +191,9 @@ export class DND {
     this.dragging = true;
 
     //
+    this._movement_timeout_multiplier = 0.6;
+
+    //
     this.tileDNDDOM!.style.zIndex = MAXIMUM_Z_INDEX;
 
     // reset snap cache
@@ -249,6 +255,7 @@ export class DND {
         }
 
         this._movement_timeout = window.setTimeout(() => {
+          this._movement_timeout_multiplier = 1;
           const old_group_id = this.tileId;
           const new_group_id = this._snap!.group!;
           if (old_group_id == new_group_id) {
@@ -274,7 +281,7 @@ export class DND {
               detail: bulkChange,
             }));
           }
-        }, 1000);
+        }, 700 * this._movement_timeout_multiplier);
       }
     } else {
       // clear movement timeout
@@ -367,6 +374,9 @@ export class DND {
     this.dragging = true;
 
     //
+    this._movement_timeout_multiplier = 0.6;
+
+    //
     element.setAttribute("data-dragging", "true");
 
     //
@@ -411,6 +421,8 @@ export class DND {
         this._movement_timeout = -1;
       }
       this._movement_timeout = window.setTimeout(() => {
+        this._movement_timeout_multiplier = 1;
+
         let group_pairs = Array.from(this.$._groups.entries());
         group_pairs.sort(([a], [b]) => a - b);
         let groups = group_pairs.map(p => p[1]);
@@ -429,7 +441,7 @@ export class DND {
 
         // rearrange
         this.$.rearrange();
-      }, 1000);
+      }, 700 * this._movement_timeout_multiplier);
     }
 
     // Core#groupDragMove

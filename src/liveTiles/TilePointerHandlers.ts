@@ -246,8 +246,10 @@ export class TilePointerHandlers {
       this.$._dnd.tileButton = this.node;
       this.draggable_ready = true;
       this.position_dnd();
-      // tileDND#touchstart
-      this.$._dnd.tileDNDDOM?.dispatchEvent(this.touch_start_event!);
+      window.setTimeout(() => {
+        // tileDND#touchstart
+        this.$._dnd.tileDNDDOM?.dispatchEvent(this.touch_start_event!);
+      }, 0);
     }
 
     //
@@ -268,7 +270,9 @@ export class TilePointerHandlers {
     //
     if (this.dragged) {
       // tileDND#touchmove
-      this.$._dnd.tileDNDDOM?.dispatchEvent(e);
+      window.setTimeout(() => {
+        this.$._dnd.tileDNDDOM?.dispatchEvent(e);
+      }, 0);
     }
   }
 
@@ -284,8 +288,10 @@ export class TilePointerHandlers {
     this.touch_start_event = null;
     this.touch_start_id  = -1;
     if (this.dragged) {
-      // tileDND#touchend
-      this.$._dnd.tileDNDDOM?.dispatchEvent(e);
+      window.setTimeout(() => {
+        // tileDND#touchend
+        this.$._dnd.tileDNDDOM?.dispatchEvent(e);
+      }, 0);
 
       // cancel drag-n-drop timeout
       if (this.allow_dnd_timeout != -1) {
@@ -338,8 +344,10 @@ export class TilePointerHandlers {
     this.touch_start_event = null;
     this.touch_start_id  = -1;
     if (this.dragged) {
-      // tileDND#touchcancel
-      this.$._dnd.tileDNDDOM?.dispatchEvent(e);
+      window.setTimeout(() => {
+        // tileDND#touchcancel
+        this.$._dnd.tileDNDDOM?.dispatchEvent(e);
+      }, 0);
 
       // cancel drag-n-drop timeout
       if (this.allow_dnd_timeout != -1) {

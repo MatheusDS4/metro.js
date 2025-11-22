@@ -21,6 +21,5 @@
 # Live tiles
 
 - [x] Done
-  - [ ] Fix click outside not ranging wide
-  - [ ] Fix tile drag-n-drop not doing any move
+  - [ ] Fix tile drag-n-drop not working perfectly. (Something wrong in Layouts rearrangement and their snapping?)
 - [ ] Test group drag-n-drop
