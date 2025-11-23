@@ -133,7 +133,7 @@ function App() {
             <TilePage size="medium">
               <VGroup padding={10} gap={10}>
                 <Icon native="terminal" size={27}/>
-                <Label variant="heading" style={{fontSize: "1.2rem", margin: "0"}}>Run some Bash</Label>
+                <Label variant="heading" style={{fontSize: "1rem", margin: "0"}}>Run some Bash</Label>
               </VGroup>
             </TilePage>
             <TilePage size=">= wide">

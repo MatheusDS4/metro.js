@@ -65,7 +65,7 @@ export function Tile(params: {
   disabled?: boolean,
 
   /**
-   * Icon size percent inside 57x57 logical pixels.
+   * Icon size percent inside 47x47 logical pixels.
    * Clamps to minimum 60%.
    *
    * @default 100
@@ -261,7 +261,6 @@ export function Tile(params: {
         params.size,
         ...(mode.checking ? ["checking-mode"] : []),
         ...(mode.dnd ? ["dnd-mode"] : []),
-        ...(mode.horizontal ? ["horizontal-mode"] : []),
         ...(params.background ? [] : ["transparent"]),
         ...(params.className ?? "").split(" ").filter(c => c != "")
       ].join(" ")}
@@ -285,7 +284,7 @@ export function Tile(params: {
       $foreground={params.foreground || theme.colors.foreground}
       $primary={theme.colors.primary}
       $primary_foreground={theme.colors.primaryForeground}
-      $icon_size={((Math.max(60, params.iconSize ?? 100)) / 100) * 57}>
+      $icon_size={((Math.max(60, params.iconSize ?? 100)) / 100) * 47}>
 
       <div className="Tile-content" ref={content_ref}>
         {params.children}
@@ -408,11 +407,6 @@ const Tile_button = styled.button<{
     }
 
     &&.small > .Tile-content > .TilePage[data-variant="iconLabel"] > .Group {
-      width: ${$ => REMConvert.pixels.rem($.$icon_size - 26)}rem;
-      height: ${$ => REMConvert.pixels.rem($.$icon_size - 26)}rem;
-    }
-
-    &&.small.horizontal-mode > .Tile-content > .TilePage[data-variant="iconLabel"] > .Group {
       width: ${$ => REMConvert.pixels.rem($.$icon_size - 20)}rem;
       height: ${$ => REMConvert.pixels.rem($.$icon_size - 20)}rem;
     }
@@ -447,7 +441,7 @@ const Tile_button = styled.button<{
       position: absolute;
       font-weight: lighter;
       opacity: 0.8;
-      font-size: 1.5rem;
+      font-size: 1.13rem;
       left: 0.4rem;
       right: 0.4rem;
       top: 0.6rem;
@@ -461,11 +455,6 @@ const Tile_button = styled.button<{
     }
 
     && > .Tile-content > .TilePage[data-variant="labelIcon"] > .Group {
-      width: ${$ => REMConvert.pixels.rem($.$icon_size - 26)}rem;
-      height: ${$ => REMConvert.pixels.rem($.$icon_size - 26)}rem;
-    }
-
-    &&.horizontal-mode > .Tile-content > .TilePage[data-variant="labelIcon"] > .Group {
       width: ${$ => REMConvert.pixels.rem($.$icon_size - 20)}rem;
       height: ${$ => REMConvert.pixels.rem($.$icon_size - 20)}rem;
     }
