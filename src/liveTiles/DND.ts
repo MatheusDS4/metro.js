@@ -22,9 +22,6 @@ export class DND {
   // used for propagating click to the true tile <button>
   private _tile_dnd_click_handler: null | Function = null;
 
-  //
-  private _document_touch_move_handler: null | Function = null
-
   // original state (in compact form (no DOM, no group labels))
   //
   // NOTE: _original_state is entirely unused for now.
@@ -123,12 +120,6 @@ export class DND {
       this.tileDNDDOM?.children[0].removeAttribute("data-dragging");
     }
 
-    //
-    if (this._document_touch_move_handler) {
-      document.removeEventListener("touchmove", this._document_touch_move_handler as any);
-      this._document_touch_move_handler = null;
-    }
-
     // groups
     const group = this.groupDraggable ?
       this.$._groups.values().find(g => g.id == this.groupDraggable![0]) :
@@ -199,18 +190,6 @@ export class DND {
     document.documentElement.style.overscrollBehavior =
     document.body.style.touchAction =
     document.body.style.overscrollBehavior = "none";
-
-    //
-    if (this._document_touch_move_handler) {
-      document.removeEventListener("touchmove", this._document_touch_move_handler as any);
-    }
-    this._document_touch_move_handler = (e: Event): void => {
-      // unfortunately browsers don't allow
-      // preventing scrolling for our purpose.
-      //
-      // e.preventDefault();
-    };
-    document.addEventListener("touchmove", this._document_touch_move_handler as any, { passive: false });
 
     //
     if (this.tileDNDDOM?.children.length !== 0) {
@@ -346,12 +325,6 @@ export class DND {
     if (this._movement_timeout != -1) {
       window.clearTimeout(this._movement_timeout);
       this._movement_timeout = -1;
-    }
-
-    //
-    if (this._document_touch_move_handler) {
-      document.removeEventListener("touchmove", this._document_touch_move_handler as any);
-      this._document_touch_move_handler = null;
     }
 
     // exit if the tile has been removed while dragging.

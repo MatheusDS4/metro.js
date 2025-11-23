@@ -8,6 +8,7 @@ import { TileSize, TileSizeMapPair } from "./TileSize";
 import { SimpleGroup } from "./SimpleGroup";
 import * as MathUtils from "../utils/MathUtils";
 import * as OffsetUtils from "../utils/OffsetUtils";
+import { TouchScroller } from "../utils/ScrollUtils";
 
 //
 export class TilePointerHandlers {
@@ -24,6 +25,9 @@ export class TilePointerHandlers {
   private allow_dnd_timeout: number = -1;
   private enable_touch_dnd: boolean = false;
   private touch_start_event: null | TouchEvent = null;
+
+  // touch scroll stuff
+  private touch_scroller: null | TouchScroller = null;
 
   //
   private bound_window_mouse_move_handler: null | Function = null;
@@ -201,6 +205,10 @@ export class TilePointerHandlers {
       return;
     }
     // e.preventDefault();
+    this.touch_scroller = new TouchScroller(
+      this.$._container,
+      this.$._dir
+    );
     this.touch_start_id = e.touches[0].identifier;
     this.enable_touch_dnd = false;
     this.just_held_long = false;
@@ -227,6 +235,13 @@ export class TilePointerHandlers {
 
   //
   private touch_move(e: TouchEvent): void {
+    if (this.enable_touch_dnd) {
+      this.touch_scroller?.destroy();
+      this.touch_scroller = null;
+    } else {
+      // scroll
+      this.touch_scroller!.move(e);
+    }
     if (this.touch_start_id == -1) {
       return;
     }

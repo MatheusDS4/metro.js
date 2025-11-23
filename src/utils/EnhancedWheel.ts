@@ -5,13 +5,16 @@ import { ScrollToPlugin } from "gsap/dist/ScrollToPlugin";
 // local
 import * as MathUtils from "./MathUtils";
 
+//
+gsap.registerPlugin(ScrollToPlugin);
+
 /**
  * Enhanced wheel scroll implementation.
  */
 export class EnhancedWheel {
   private last_wheel_timestamp: number = -1;
   private wheel_multiplier: number = 2;
-  private gsap_wheel_tween: null | gsap.core.Tween = null;
+  private tween: null | gsap.core.Tween = null;
   private handler: (e: WheelEvent) => void;
 
   //
@@ -50,19 +53,18 @@ export class EnhancedWheel {
       }
       const delta = e.deltaY * this.wheel_multiplier;
       let target_scroll = div.scrollLeft + delta;
-      target_scroll = MathUtils.clamp(target_scroll, 0, div.scrollWidth);
-      if (this.gsap_wheel_tween) {
-        this.gsap_wheel_tween!.kill();
-        this.gsap_wheel_tween = null;
+      target_scroll = MathUtils.clamp(target_scroll, 0, div.scrollWidth - div.clientWidth);
+      if (this.tween) {
+        this.tween!.kill();
+        this.tween = null;
       }
-      gsap.registerPlugin(ScrollToPlugin);
-      this.gsap_wheel_tween = gsap.to(div, {
+      this.tween = gsap.to(div, {
         scrollLeft: target_scroll,
         duration: 0.3,
         ease: "power1.out",
       });
-      this.gsap_wheel_tween!.then(() => {
-        this.gsap_wheel_tween = null;
+      this.tween!.then(() => {
+        this.tween = null;
       });
       this.last_wheel_timestamp = Date.now();
     }
@@ -91,19 +93,18 @@ export class EnhancedWheel {
       }
       const delta = e.deltaY * this.wheel_multiplier;
       let target_scroll = div.scrollTop + delta;
-      target_scroll = MathUtils.clamp(target_scroll, 0, div.scrollHeight);
-      if (this.gsap_wheel_tween) {
-        this.gsap_wheel_tween!.kill();
-        this.gsap_wheel_tween = null;
+      target_scroll = MathUtils.clamp(target_scroll, 0, div.scrollHeight - div.clientHeight);
+      if (this.tween) {
+        this.tween!.kill();
+        this.tween = null;
       }
-      gsap.registerPlugin(ScrollToPlugin);
-      this.gsap_wheel_tween = gsap.to(div, {
+      this.tween = gsap.to(div, {
         scrollTop: target_scroll,
         duration: 0.3,
         ease: "power1.out",
       });
-      this.gsap_wheel_tween!.then(() => {
-        this.gsap_wheel_tween = null;
+      this.tween!.then(() => {
+        this.tween = null;
       });
       this.last_wheel_timestamp = Date.now();
     }
