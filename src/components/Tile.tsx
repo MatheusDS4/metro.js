@@ -210,6 +210,7 @@ export function Tile(params: {
       tilting.current = false;
       tilting_pointer_id.current = -1;
     };
+    window.addEventListener("pointerup", window_pointer_up.current as any);
 
     // stop tilting
     window_pointer_cancel.current = (e: PointerEvent) => {
