@@ -71,10 +71,10 @@ export class TouchScroller {
       this._scroll_node.scrollTop = target_scroll;
     }
 
-    this._last_position = current_position;
     /*
     this._tween = gsap.to(this._scroll_node, {
-      scrollLeft: target_scroll,
+      scrollLeft: this._orientation === "horizontal" ? target_scroll : undefined,
+      scrollTop: this._orientation === "vertical" ? target_scroll : undefined,
       duration: 0.3,
       ease: "power1.out",
     });
@@ -82,6 +82,8 @@ export class TouchScroller {
       this._tween = null;
     });
     */
+
+    this._last_position = current_position;
   }
 
   //
