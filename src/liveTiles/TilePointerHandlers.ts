@@ -316,6 +316,9 @@ export class TilePointerHandlers {
 
   //
   private touch_end(e: TouchEvent): void {
+    //
+    this.touch_scroller?.end(e);
+
     if (this.touch_start_id == -1) {
       return;
     }
@@ -378,6 +381,9 @@ export class TilePointerHandlers {
 
   //
   private touch_cancel(e: TouchEvent): void {
+    //
+    this.touch_scroller?.end(e);
+
     if (this.touch_start_id == -1) {
       return;
     }

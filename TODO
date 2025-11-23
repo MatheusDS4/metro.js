@@ -23,3 +23,4 @@
 - [x] Done
   - [ ] Fix: group transfer
   - [ ] Fix: switching layouts seems to mess tile positioning a bit.
+  - [ ] Fix: sometimes shifting messes positions.
