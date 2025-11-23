@@ -142,6 +142,7 @@ export class GroupPointerHandlers {
       this.$._container,
       this.$._dir
     );
+    this.touch_scroller!.start(e);
     this.touch_start_id = e.touches[0].identifier;
     this.enable_touch_dnd = false;
     this.dragged = false;

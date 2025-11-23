@@ -209,6 +209,7 @@ export class TilePointerHandlers {
       this.$._container,
       this.$._dir
     );
+    this.touch_scroller!.start(e);
     this.touch_start_id = e.touches[0].identifier;
     this.enable_touch_dnd = false;
     this.just_held_long = false;
