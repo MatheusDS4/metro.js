@@ -6,7 +6,7 @@ This library implements live tiles with drag-n-drop, including group transfer an
 
 ## Getting started
 
-For creating live tiles, you need some additional code for handling the drag-n-drop behavior. You can refer to the [API documentation](https://hydroperx.github.io/metrodesign.js/docs) for more information.
+For creating live tiles, you need some additional code due to the drag-n-drop behavior; it is optional however. You can refer to the [API documentation](https://hydroperx.github.io/metrodesign.js/docs/functions/components.Tiles.html) for more information.
 
 ```tsx
 // register Metro design fonts
