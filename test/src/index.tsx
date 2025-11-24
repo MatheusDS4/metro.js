@@ -273,7 +273,7 @@ function App() {
   function drag_start(e: { id: string, dnd: HTMLElement }): void {
     const group = groups.find(g => g.tiles.has(e.id))!;
     const tile = group.tiles.get(e.id)!;
-    set_tile_dragging({ id: e.id, tile });
+    set_tile_dragging({ id: e.id, tile: structuredClone(tile) });
   }
 
   //
