@@ -291,6 +291,7 @@ function App() {
             selection={false}
             style={{
               overflowX: "auto",
+              overflowY: "auto",
             }}
             padding={tiles_direction == "horizontal" ? 10 : 1 }
             wheelHorizontal={tiles_direction == "horizontal"}
