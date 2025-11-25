@@ -20,6 +20,8 @@ import {
   Group,
   HGroup,
   VGroup,
+  CheckBox,
+  Button,
   Label,
   Icon,
   Tiles,
@@ -227,7 +229,9 @@ function App() {
     }
     for (const { id: group_id } of e.groupRemovals) {
       const i = new_groups.findIndex(g => g.id == group_id);
-      new_groups.splice(i, 1);
+      if (i !== -1) {
+        new_groups.splice(i, 1);
+      }
     }
     if (e.groupCreation) {
       const tile_id = e.groupCreation!.tile;

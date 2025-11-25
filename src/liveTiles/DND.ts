@@ -294,7 +294,7 @@ export class DND {
               tile.lastRearrange_positioned = false;
             }
 
-              // group transfer
+            // group transfer
             const bulkChange: BulkChange = {
               movedTiles: [],
               groupTransfers: [{ group: new_group_id, id: this.tileId, x: this._snap!.x, y: this._snap!.y }],

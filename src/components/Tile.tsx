@@ -206,7 +206,9 @@ export function Tile(params: {
       }
       window.removeEventListener("pointerup", window_pointer_up.current as any);
       window_pointer_up.current = null;
-      content_ref.current!.style.transform = "";
+      if (content_ref.current) {
+        content_ref.current!.style.transform = "";
+      }
       tilting.current = false;
       tilting_pointer_id.current = -1;
     };
@@ -219,7 +221,9 @@ export function Tile(params: {
       }
       window.removeEventListener("pointercancel", window_pointer_cancel.current as any);
       window_pointer_cancel.current = null;
-      content_ref.current!.style.transform = "";
+      if (content_ref.current) {
+        content_ref.current!.style.transform = "";
+      }
       tilting.current = false;
       tilting_pointer_id.current = -1;
     };
