@@ -1,5 +1,5 @@
 {
-  "name": "com.hydroper.metrodesign.test",
+  "name": "com.sweaxizone.metro.test",
   "type": "module",
   "scripts": {
     "dev": "vite",
